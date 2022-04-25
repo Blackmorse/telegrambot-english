@@ -1,31 +1,27 @@
 package com.blackmorse.telegrambotenglish.akka
 
 import akka.actor.typed.Behavior
-import akka.actor.typed.javadsl.AbstractBehavior
 import akka.actor.typed.javadsl.ActorContext
 import akka.actor.typed.javadsl.Behaviors
-import akka.actor.typed.javadsl.Receive
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.dictionaries.ShowDictionariesBehavior
 import com.blackmorse.telegrambotenglish.akka.messages.*
+import org.telegram.telegrambots.meta.api.objects.Update
 
 data class UserData(val chatId: String, val dictionaries: List<String>)
 
-class UserCommandsBehavior(englishBot: EnglishBot, userData: UserData, context: ActorContext<UserActorMessage>?) : AbstractUserBehavior(englishBot, userData, context) {
-    override fun createReceive(): Receive<UserActorMessage>? {
-        return newReceiveBuilder()
-            .onMessage(TelegramMessage::class.java) {msg ->
-                if (msg.update.message.text == MessageParser.TopLevelCommands.SHOW_DICTIONARIES.text) {
-                    englishBot.sendDictionariesList(userData.chatId, userData.dictionaries)
-                    return@onMessage ShowDictionariesBehavior.create(englishBot, userData)
-                } else if (msg.update.message.text == "<< Back") {
-                    englishBot.sendCommandsList(userData.chatId)
-                    return@onMessage this
-                } else {
-                    return@onMessage this
-                }
-            }
-            .build()
+class UserCommandsBehavior(englishBot: EnglishBot, userData: UserData, context: ActorContext<UserActorMessage>?)
+        : AbstractUserBehavior(englishBot, userData, context) {
+    override fun receiveUpdate(update: Update): Behavior<UserActorMessage> {
+        if (update.message.text == Commands.SHOW_DICTIONARIES.text) {
+            englishBot.sendDictionariesList(userData.chatId, userData.dictionaries)
+            return ShowDictionariesBehavior.create(englishBot, userData)
+        }
+        return this
+    }
+
+    override fun back(): Behavior<UserActorMessage> {
+        return this
     }
 
     companion object {

@@ -3,24 +3,24 @@ package com.blackmorse.telegrambotenglish.akka.dictionaries
 import akka.actor.typed.Behavior
 import akka.actor.typed.javadsl.ActorContext
 import akka.actor.typed.javadsl.Behaviors
-import akka.actor.typed.javadsl.Receive
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.AbstractUserBehavior
 import com.blackmorse.telegrambotenglish.akka.UserData
-import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
+import org.telegram.telegrambots.meta.api.objects.Update
 
 class AddDictionaryBehavior(englishBot: EnglishBot, userData: UserData, context: ActorContext<UserActorMessage>?)
         : AbstractUserBehavior(englishBot, userData, context){
-    override fun createReceive(): Receive<UserActorMessage> {
-        return newReceiveBuilder()
-            .onMessage(TelegramMessage::class.java) {msg ->
-                val dictionaryName = msg.update.message.text
-                val newDictionaries = userData.dictionaries + listOf(dictionaryName)
-                englishBot.sendDictionariesList(userData.chatId, newDictionaries)
-                ShowDictionariesBehavior.create(englishBot, userData.copy(dictionaries = newDictionaries))
-            }.build()
+    override fun receiveUpdate(update: Update): Behavior<UserActorMessage> {
+        val dictionaryName = update.message.text
+        val newDictionaries = userData.dictionaries + listOf(dictionaryName)
+        englishBot.sendDictionariesList(userData.chatId, newDictionaries)
+        return ShowDictionariesBehavior.create(englishBot, userData.copy(dictionaries = newDictionaries))
+    }
 
+    override fun back(): Behavior<UserActorMessage> {
+        englishBot.sendDictionariesList(userData.chatId, userData.dictionaries)
+        return ShowDictionariesBehavior.create(englishBot, userData)
     }
 
     companion object {
