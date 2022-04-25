@@ -50,14 +50,15 @@ class EnglishBot(val token: String, val name: String) : TelegramLongPollingBot()
     }
 
     fun sendDictionariesList(chatId: String, dictsList: List<String>) {
-        val chunkedDictionaries = dictsList.chunked(3)
+        val dictsWithIndex = dictsList.withIndex()
+        val chunkedDictionaries = dictsWithIndex.chunked(3)
         val builder = ReplyKeyboardMarkup.builder()
         chunkedDictionaries.forEach{ dictionaries ->
-            builder.keyboardRow(KeyboardRow(dictionaries.map { KeyboardButton(it) }))
+            builder.keyboardRow(KeyboardRow(dictionaries.map { KeyboardButton("${it.index + 1}. ${it.value}") }))
         }
         builder.keyboardRow(KeyboardRow(listOf(KeyboardButton("Add"), KeyboardButton("Delete"))))
 
-        val text = dictsList.withIndex().joinToString("\n") { "${it.index}. ${it.value}" }
+        val text = dictsWithIndex.joinToString("\n") { "${it.index + 1}. ${it.value}" }
         val msg = createMessage(chatId, "Select dictionary or actions: \n$text", builder)
         sendApiMethod(msg)
     }
