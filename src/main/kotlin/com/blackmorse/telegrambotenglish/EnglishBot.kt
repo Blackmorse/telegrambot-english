@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 
-class EnglishBot(val token: String, val name: String) : TelegramLongPollingBot() {
+class EnglishBot(private val token: String, private val name: String) : TelegramLongPollingBot() {
     lateinit  var system: ActorSystem<Update>
 
     override fun getBotToken(): String {
@@ -56,7 +56,14 @@ class EnglishBot(val token: String, val name: String) : TelegramLongPollingBot()
         chunkedDictionaries.forEach{ dictionaries ->
             builder.keyboardRow(KeyboardRow(dictionaries.map { KeyboardButton("${it.index + 1}. ${it.value}") }))
         }
-        builder.keyboardRow(KeyboardRow(listOf(KeyboardButton("Add"), KeyboardButton("Delete"))))
+
+        val addButton = KeyboardButton("Add")
+        val dictionaryActionButtons = if (dictsList.isEmpty()) {
+            listOf(addButton)
+        } else {
+            listOf(addButton, KeyboardButton("Delete"))
+        }
+        builder.keyboardRow(KeyboardRow(dictionaryActionButtons))
 
         val text = dictsWithIndex.joinToString("\n") { "${it.index + 1}. ${it.value}" }
         val msg = createMessage(chatId, "Select dictionary or actions: \n$text", builder)
