@@ -14,7 +14,7 @@ class UserCommandsBehavior(englishBot: EnglishBot, userData: UserData, context: 
         : AbstractUserBehavior(englishBot, userData, context) {
     override fun receiveUpdate(update: Update): Behavior<UserActorMessage> {
         if (update.message.text == Commands.SHOW_DICTIONARIES.text) {
-            englishBot.sendDictionariesList(userData.chatId, userData.dictionaries)
+            englishBot.sendDictionariesList(userData.chatId, userData.dictionaries, true)
             return ShowDictionariesBehavior.create(englishBot, userData)
         }
         return this

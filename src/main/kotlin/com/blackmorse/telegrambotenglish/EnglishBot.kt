@@ -49,7 +49,7 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         sendApiMethod(msg)
     }
 
-    fun sendDictionariesList(chatId: String, dictsList: List<String>) {
+    fun sendDictionariesList(chatId: String, dictsList: List<String>, showDictCommands: Boolean) {
         val dictsWithIndex = dictsList.withIndex()
         val chunkedDictionaries = dictsWithIndex.chunked(3)
         val builder = ReplyKeyboardMarkup.builder()
@@ -57,13 +57,16 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
             builder.keyboardRow(KeyboardRow(dictionaries.map { KeyboardButton("${it.index + 1}. ${it.value}") }))
         }
 
-        val addButton = KeyboardButton("Add")
-        val dictionaryActionButtons = if (dictsList.isEmpty()) {
-            listOf(addButton)
-        } else {
-            listOf(addButton, KeyboardButton("Delete"))
+        val addButton = KeyboardButton(Commands.ADD_DICTIONARY.text)
+
+        if (showDictCommands) {
+            val dictionaryActionButtons = if (dictsList.isEmpty()) {
+                listOf(addButton)
+            } else {
+                listOf(addButton, KeyboardButton(Commands.DELETE_DICTIONARY.text))
+            }
+            builder.keyboardRow(KeyboardRow(dictionaryActionButtons))
         }
-        builder.keyboardRow(KeyboardRow(dictionaryActionButtons))
 
         val text = dictsWithIndex.joinToString("\n") { "${it.index + 1}. ${it.value}" }
         val msg = createMessage(chatId, "Select dictionary or actions: \n$text", builder)

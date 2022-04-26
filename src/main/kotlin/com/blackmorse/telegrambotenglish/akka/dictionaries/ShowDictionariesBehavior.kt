@@ -7,15 +7,19 @@ import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.AbstractUserBehavior
 import com.blackmorse.telegrambotenglish.akka.UserCommandsBehavior
 import com.blackmorse.telegrambotenglish.akka.UserData
+import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 
 class ShowDictionariesBehavior(englishBot: EnglishBot, userData: UserData, context: ActorContext<UserActorMessage>)
         : AbstractUserBehavior(englishBot, userData, context) {
     override fun receiveUpdate(update: Update): Behavior<UserActorMessage> {
-        if (update.message.text == "Add") {
+        if (update.message.text == Commands.ADD_DICTIONARY.text) {
             englishBot.justSendText("Enter dictionary name:", userData.chatId)
             return AddDictionaryBehavior.create(englishBot, userData)
+        } else if (update.message.text == Commands.DELETE_DICTIONARY.text) {
+            englishBot.sendDictionariesList(userData.chatId, userData.dictionaries, false)
+            return DeleteDictionaryBehavior.create(englishBot, userData)
         }
         return this
     }

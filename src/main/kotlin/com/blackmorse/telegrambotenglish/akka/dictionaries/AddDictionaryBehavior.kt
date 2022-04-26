@@ -14,12 +14,12 @@ class AddDictionaryBehavior(englishBot: EnglishBot, userData: UserData, context:
     override fun receiveUpdate(update: Update): Behavior<UserActorMessage> {
         val dictionaryName = update.message.text
         val newDictionaries = userData.dictionaries + listOf(dictionaryName)
-        englishBot.sendDictionariesList(userData.chatId, newDictionaries)
+        englishBot.sendDictionariesList(userData.chatId, newDictionaries, true)
         return ShowDictionariesBehavior.create(englishBot, userData.copy(dictionaries = newDictionaries))
     }
 
     override fun back(): Behavior<UserActorMessage> {
-        englishBot.sendDictionariesList(userData.chatId, userData.dictionaries)
+        englishBot.sendDictionariesList(userData.chatId, userData.dictionaries, true)
         return ShowDictionariesBehavior.create(englishBot, userData)
     }
 
