@@ -3,6 +3,7 @@ package com.blackmorse.telegrambotenglish.akka.states
 import akka.persistence.typed.javadsl.Effect
 import akka.persistence.typed.javadsl.EventSourcedBehavior
 import com.blackmorse.telegrambotenglish.EnglishBot
+import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
@@ -19,17 +20,17 @@ class DeleteDictionaryState(userData: UserData) : State(userData) {
         englishBot: EnglishBot,
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
-        val dictNameSplit = msg.update.message.text.split(". ", limit = 2)
+        val dictNameOpt = Dictionary.getDictionaryNameFromIndexedList(msg.update.message.text)
 
-        return if (dictNameSplit.size == 2 && userData.dictionaries.contains(dictNameSplit[1])) {
-            val dictName = dictNameSplit[1]
+        return if (dictNameOpt.isPresent && userData.dictionaries.map{it.name}.contains(dictNameOpt.get())) {
+            val dictName = dictNameOpt.get()
 
             behavior.Effect().persist(DictionaryDeletedEvent(dictName))
-                .thenRun{ state : ShowDictionariesState -> englishBot.sendDictionariesList(userData.chatId, state.userData.dictionaries, true)}
+                .thenRun{ state : ShowDictionariesState -> englishBot.sendDictionariesList(userData.chatId, state.userData.dictionaries.map{it.name}, true)}
         } else {
             behavior.Effect().none().thenRun{
                 englishBot.justSendText("There is no dictionary ${msg.update.message.text}", userData.chatId)
-                englishBot.sendDictionariesList(userData.chatId, userData.dictionaries, false)
+                englishBot.sendDictionariesList(userData.chatId, userData.dictionaries.map{it.name}, false)
             }
         }
     }
@@ -38,15 +39,20 @@ class DeleteDictionaryState(userData: UserData) : State(userData) {
         return when (clazz) {
             DictionaryDeletedEvent::class.java -> {
                 val dictionaryName = (event as DictionaryDeletedEvent).dictionaryName
-                val newUserData = userData.copy(dictionaries = userData.dictionaries - dictionaryName)
-                ShowDictionariesState(newUserData)
+                val dictionary = userData.dictionaries.find { it.name == dictionaryName }
+                if (dictionary != null) {
+                    val newUserData = userData.copy(dictionaries = userData.dictionaries - dictionary)
+                    ShowDictionariesState(newUserData)
+                } else {
+                    ShowDictionariesState(userData)
+                }
             }
             else -> this
         }
     }
 
     override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendDictionariesList(userData.chatId, userData.dictionaries, true)
+        englishBot.sendDictionariesList(userData.chatId, userData.dictionaries.map{it.name}, true)
     }
 
     override fun backState(): State {

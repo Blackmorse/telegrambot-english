@@ -5,5 +5,7 @@ enum class Commands(val text: String) {
     MAIN_MENU("Main Menu"),
     SHOW_DICTIONARIES("Show dictionaries"),
     ADD_DICTIONARY("Add Dictionary"),
-    DELETE_DICTIONARY("Delete Dictionary")
+    DELETE_DICTIONARY("Delete Dictionary"),
+    ADD_WORD("Add Word"),
+    DELETE_WORD("Delete Word")
 }

@@ -4,6 +4,7 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.LogOptions
 import akka.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
+import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import org.slf4j.event.Level
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -49,6 +50,19 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         val builder = ReplyKeyboardMarkup.builder()
         builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.SHOW_DICTIONARIES.text))))
         val msg = createMessage(chatId, "please select", builder)
+        sendApiMethod(msg)
+    }
+
+    fun sendDictionaryInfo(chatId: String, dictionary: Dictionary) {
+        val wordsText = dictionary.words.withIndex()
+            .map { "${it.index}. ${it.value.word} <-> ${it.value.translation}"}
+            .joinToString ( "\n" )
+
+        val text = "${dictionary.name} \n\n$wordsText"
+
+        val builder = ReplyKeyboardMarkup.builder()
+        builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.ADD_WORD.text), KeyboardButton(Commands.DELETE_WORD.text))))
+        val msg = createMessage(chatId, text, builder)
         sendApiMethod(msg)
     }
 
