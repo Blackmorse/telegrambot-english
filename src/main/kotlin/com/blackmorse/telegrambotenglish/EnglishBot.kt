@@ -1,8 +1,11 @@
 package com.blackmorse.telegrambotenglish
 
 import akka.actor.typed.ActorSystem
+import akka.actor.typed.LogOptions
+import akka.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
+import org.slf4j.event.Level
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -80,7 +83,9 @@ fun main(args: Array<String>) {
         val botName = args[1]
         val englishBot = EnglishBot(token, botName)
 
-        val system  = ActorSystem.create(BotSupervisor.createBehavior(englishBot), "actorSystem")
+        val system  = ActorSystem.create(
+            Behaviors.logMessages(LogOptions.create().withLevel(Level.TRACE),BotSupervisor.createBehavior(englishBot)),
+            "actorSystem")
 
         englishBot.system = system
         Thread {
