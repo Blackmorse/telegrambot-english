@@ -43,6 +43,9 @@ class EventSourcedUserActor(val chatId: String, val englishBot: EnglishBot) :
         builder.forStateType(AddTranslationToWordState::class.java)
             .onCommand(TelegramMessage::class.java){state, msg -> state.handleMessage(msg, englishBot, this)}
 
+        builder.forStateType(DeleteWordFromDictionaryState::class.java)
+            .onCommand(TelegramMessage::class.java){state, msg -> state.handleMessage(msg, englishBot, this)}
+
         builder
             .forAnyState()
             .onAnyCommand{_ -> Effect().none().thenRun { println("Dead letters") }}
@@ -74,6 +77,9 @@ class EventSourcedUserActor(val chatId: String, val englishBot: EnglishBot) :
             .onAnyEvent{state, event -> state.handleEvent(event.javaClass, state, event)}
 
         builder.forStateType(AddTranslationToWordState::class.java)
+            .onAnyEvent{state, event -> state.handleEvent(event.javaClass, state, event)}
+
+        builder.forStateType(DeleteWordFromDictionaryState::class.java)
             .onAnyEvent{state, event -> state.handleEvent(event.javaClass, state, event)}
 
         return builder.build()

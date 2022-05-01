@@ -23,10 +23,10 @@ class ShowDictionariesState(userData: UserData) : State(userData) {
             }
             Commands.DELETE_DICTIONARY.text -> {
                 behavior.Effect().persist(DeleteDictionaryEvent)
-                    .thenRun{ englishBot.sendDictionariesList(userData.chatId, userData.dictionaries.map{it.name}, false)}
+                    .thenRun{ englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, false)}
             }
             else -> {
-                val dictionaryNameOpt = Dictionary.getDictionaryNameFromIndexedList(msg.update.message.text)
+                val dictionaryNameOpt = Dictionary.getItemFromIndexedList(msg.update.message.text)
                 if (dictionaryNameOpt.isPresent && userData.dictionaries.map{ it.name }.contains(dictionaryNameOpt.get())) {
                     val dictionary = userData.dictionaries.find { it.name == dictionaryNameOpt.get() }!!
                     behavior.Effect().persist(SelectDictionaryEvent(dictionaryNameOpt.get()))

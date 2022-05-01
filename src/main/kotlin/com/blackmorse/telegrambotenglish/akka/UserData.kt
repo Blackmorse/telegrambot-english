@@ -6,7 +6,7 @@ data class UserData(val chatId: String, val dictionaries: List<Dictionary>)
 
 data class Dictionary(val name: String, val words: List<WordWithTranslation>) {
     companion object {
-        fun getDictionaryNameFromIndexedList(message: String): Optional<String> {
+        fun getItemFromIndexedList(message: String): Optional<String> {
             val dictNameSplit = message.split(". ", limit = 2)
             return if (dictNameSplit.size == 2) {
                 Optional.of(dictNameSplit[1])
@@ -17,4 +17,8 @@ data class Dictionary(val name: String, val words: List<WordWithTranslation>) {
     }
 }
 
-data class WordWithTranslation(val word: String, val translation: String)
+data class WordWithTranslation(val word: String, val translation: String) {
+    override fun toString(): String {
+        return "$word <-> $translation"
+    }
+}

@@ -17,7 +17,7 @@ class ShowCommandsState(userData: UserData) : State(userData) {
     ): Effect<Event, State> {
         return if (msg.update.message.text == Commands.SHOW_DICTIONARIES.text) {
             behavior.Effect().persist(ShowDictionariesEvent)
-                .thenRun{ englishBot.sendDictionariesList(userData.chatId, userData.dictionaries.map{it.name}, true) }
+                .thenRun{ englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, true) }
         } else {
             behavior.Effect().none().thenNoReply()
         }

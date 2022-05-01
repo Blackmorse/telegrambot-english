@@ -20,17 +20,17 @@ class DeleteDictionaryState(userData: UserData) : State(userData) {
         englishBot: EnglishBot,
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
-        val dictNameOpt = Dictionary.getDictionaryNameFromIndexedList(msg.update.message.text)
+        val dictNameOpt = Dictionary.getItemFromIndexedList(msg.update.message.text)
 
         return if (dictNameOpt.isPresent && userData.dictionaries.map{it.name}.contains(dictNameOpt.get())) {
             val dictName = dictNameOpt.get()
 
             behavior.Effect().persist(DictionaryDeletedEvent(dictName))
-                .thenRun{ state : ShowDictionariesState -> englishBot.sendDictionariesList(userData.chatId, state.userData.dictionaries.map{it.name}, true)}
+                .thenRun{ state : ShowDictionariesState -> englishBot.sendItemsList(userData.chatId, state.userData.dictionaries.map{it.name}, true)}
         } else {
             behavior.Effect().none().thenRun{
                 englishBot.justSendText("There is no dictionary ${msg.update.message.text}", userData.chatId)
-                englishBot.sendDictionariesList(userData.chatId, userData.dictionaries.map{it.name}, false)
+                englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, false)
             }
         }
     }
@@ -52,7 +52,7 @@ class DeleteDictionaryState(userData: UserData) : State(userData) {
     }
 
     override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendDictionariesList(userData.chatId, userData.dictionaries.map{it.name}, true)
+        englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, true)
     }
 
     override fun backState(): State {

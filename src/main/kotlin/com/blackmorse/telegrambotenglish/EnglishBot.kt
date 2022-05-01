@@ -55,7 +55,7 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
 
     fun sendDictionaryInfo(chatId: String, dictionary: Dictionary) {
         val wordsText = dictionary.words.withIndex()
-            .map { "${it.index}. ${it.value.word} <-> ${it.value.translation}"}
+            .map { "${it.index}. ${it.value}"}
             .joinToString ( "\n" )
 
         val text = "${dictionary.name} \n\n$wordsText"
@@ -66,7 +66,7 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         sendApiMethod(msg)
     }
 
-    fun sendDictionariesList(chatId: String, dictsList: List<String>, showDictCommands: Boolean) {
+    fun sendItemsList(chatId: String, dictsList: List<String>, showDictCommands: Boolean) {
         val dictsWithIndex = dictsList.withIndex()
         val chunkedDictionaries = dictsWithIndex.chunked(3)
         val builder = ReplyKeyboardMarkup.builder()
