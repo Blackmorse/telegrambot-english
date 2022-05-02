@@ -23,12 +23,12 @@ class DeleteWordFromDictionaryState(userData: UserData, val dictionary: Dictiona
         val itemOpt = Dictionary.getItemFromIndexedList(msg.update.message.text)
         return if (itemOpt.isPresent && dictionary.words.find { it.toString() == itemOpt.get() } != null) {
             behavior.Effect().persist(WordDeletedEvent(itemOpt.get()))
-                .thenRun{ state: ShowDictionaryState -> englishBot.sendDictionaryInfo(userData.chatId, state.dictionary) }
+                .thenRun{ state: ShowDictionaryState -> state.sendBeforeStateMessage(englishBot) }
         } else {
             behavior.Effect().none()
                 .thenRun{
                     englishBot.justSendText("There is now word ${msg.update.message.text}", userData.chatId)
-                    englishBot.sendItemsList(userData.chatId, dictionary.words.map { it.toString() }, false)
+                    sendBeforeStateMessage(englishBot)
                 }
         }
     }
@@ -47,12 +47,11 @@ class DeleteWordFromDictionaryState(userData: UserData, val dictionary: Dictiona
         }
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendDictionaryInfo(userData.chatId, dictionary)
-    }
-
     override fun backState(): State {
         return ShowDictionaryState(userData, dictionary)
     }
 
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.sendItemsList(userData.chatId, dictionary.words.map { it.toString() }, false)
+    }
 }

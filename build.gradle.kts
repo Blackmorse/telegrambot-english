@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.6.10"
+        id("application")
 }
 
 group = "com.blackmorse"
@@ -34,3 +35,8 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+application {
+    mainClass.set("com.blackmorse.telegrambotenglish.EnglishBotKt")
+}
+

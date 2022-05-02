@@ -22,9 +22,7 @@ class AddDictionaryState(userData: UserData) : State(userData) {
     ): Effect<Event, State> {
         val dictionaryName = msg.update.message.text
         return behavior.Effect().persist(DictionaryAddedEvent(dictionaryName))
-            .thenRun{ state: ShowDictionariesState ->
-                englishBot.sendItemsList(state.userData.chatId, state.userData.dictionaries.map{it.name}, true)
-            }
+            .thenRun{ state: ShowDictionariesState -> state.sendBeforeStateMessage(englishBot) }
     }
 
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
@@ -38,8 +36,8 @@ class AddDictionaryState(userData: UserData) : State(userData) {
         }
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, true)
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.justSendText("Enter dictionary name:", userData.chatId)
     }
 
     override fun backState(): State {

@@ -20,10 +20,10 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
     ): Effect<Event, State> {
         return if (msg.update.message.text == Commands.ADD_WORD.text) {
             behavior.Effect().persist(AddWordEvent)
-                .thenRun{ englishBot.justSendText("Please enter the word: ", userData.chatId) }
+                .thenRun{ state: AddWordToDictionaryState -> state.sendBeforeStateMessage(englishBot) }
         } else if(msg.update.message.text == Commands.DELETE_WORD.text) {
             behavior.Effect().persist(DeleteWordEvent)
-                .thenRun { englishBot.sendItemsList(userData.chatId, dictionary.words.map { it.toString() }, false) }
+                .thenRun { state: DeleteWordFromDictionaryState -> state.sendBeforeStateMessage(englishBot) }
         } else {
             behavior.Effect().none().thenNoReply()
         }
@@ -37,8 +37,8 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
         }
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendItemsList(userData.chatId, userData.dictionaries.map { it.name }, true)
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.sendDictionaryInfo(userData.chatId, dictionary)
     }
 
     override fun backState(): State {

@@ -26,11 +26,11 @@ class DeleteDictionaryState(userData: UserData) : State(userData) {
             val dictName = dictNameOpt.get()
 
             behavior.Effect().persist(DictionaryDeletedEvent(dictName))
-                .thenRun{ state : ShowDictionariesState -> englishBot.sendItemsList(userData.chatId, state.userData.dictionaries.map{it.name}, true)}
+                .thenRun{ state : ShowDictionariesState -> state.sendBeforeStateMessage(englishBot) }
         } else {
             behavior.Effect().none().thenRun{
                 englishBot.justSendText("There is no dictionary ${msg.update.message.text}", userData.chatId)
-                englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, false)
+                sendBeforeStateMessage(englishBot)
             }
         }
     }
@@ -51,8 +51,8 @@ class DeleteDictionaryState(userData: UserData) : State(userData) {
         }
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, true)
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, false)
     }
 
     override fun backState(): State {

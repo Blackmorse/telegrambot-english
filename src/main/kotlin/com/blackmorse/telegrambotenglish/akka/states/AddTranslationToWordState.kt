@@ -22,7 +22,7 @@ class AddTranslationToWordState(userData: UserData, val dictionary: Dictionary, 
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
         return behavior.Effect().persist(TranslationToWordEnteredEvent(msg.update.message.text))
-            .thenRun { state: ShowDictionaryState -> englishBot.sendDictionaryInfo(userData.chatId, state.dictionary) }
+            .thenRun { state: ShowDictionaryState -> state.sendBeforeStateMessage(englishBot) }
     }
 
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
@@ -33,11 +33,11 @@ class AddTranslationToWordState(userData: UserData, val dictionary: Dictionary, 
         return ShowDictionaryState(newUserData, newDictionary)
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.justSendText("Enter a word:", userData.chatId)
-    }
-
     override fun backState(): State {
         return AddWordToDictionaryState(userData, dictionary)
+    }
+
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.justSendText("Enter the translation for $word:", userData.chatId)   
     }
 }

@@ -17,7 +17,7 @@ class ShowCommandsState(userData: UserData) : State(userData) {
     ): Effect<Event, State> {
         return if (msg.update.message.text == Commands.SHOW_DICTIONARIES.text) {
             behavior.Effect().persist(ShowDictionariesEvent)
-                .thenRun{ englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, true) }
+                .thenRun{ state: ShowDictionariesState -> state.sendBeforeStateMessage(englishBot) }
         } else {
             behavior.Effect().none().thenNoReply()
         }
@@ -30,9 +30,11 @@ class ShowCommandsState(userData: UserData) : State(userData) {
         }
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {}
-
     override fun backState(): State {
         return this
+    }
+
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.sendCommandsList(userData.chatId)
     }
 }

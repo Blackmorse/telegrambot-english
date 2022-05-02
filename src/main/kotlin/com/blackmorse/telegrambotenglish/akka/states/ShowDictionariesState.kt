@@ -19,18 +19,17 @@ class ShowDictionariesState(userData: UserData) : State(userData) {
         return when (msg.update.message.text) {
             Commands.ADD_DICTIONARY.text -> {
                 behavior.Effect().persist(AddDictionaryEvent)
-                    .thenRun { englishBot.justSendText("Enter dictionary name:", userData.chatId) }
+                    .thenRun { state: AddDictionaryState -> state.sendBeforeStateMessage(englishBot) }
             }
             Commands.DELETE_DICTIONARY.text -> {
                 behavior.Effect().persist(DeleteDictionaryEvent)
-                    .thenRun{ englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, false)}
+                    .thenRun{ state: DeleteDictionaryState -> state.sendBeforeStateMessage(englishBot) }
             }
             else -> {
                 val dictionaryNameOpt = Dictionary.getItemFromIndexedList(msg.update.message.text)
                 if (dictionaryNameOpt.isPresent && userData.dictionaries.map{ it.name }.contains(dictionaryNameOpt.get())) {
-                    val dictionary = userData.dictionaries.find { it.name == dictionaryNameOpt.get() }!!
                     behavior.Effect().persist(SelectDictionaryEvent(dictionaryNameOpt.get()))
-                        .thenRun{ englishBot.sendDictionaryInfo(userData.chatId, dictionary) }
+                        .thenRun{ state: ShowDictionaryState -> state.sendBeforeStateMessage(englishBot) }
                 } else {
                     behavior.Effect().none().thenNoReply()
                 }
@@ -47,8 +46,8 @@ class ShowDictionariesState(userData: UserData) : State(userData) {
         }
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendCommandsList(userData.chatId)
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.sendItemsList(userData.chatId, userData.dictionaries.map{it.name}, true)
     }
 
     override fun backState(): State {

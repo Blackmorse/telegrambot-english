@@ -14,18 +14,16 @@ class HelloScreenState(userData: UserData) : State(userData) {
         englishBot: EnglishBot,
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
-        return behavior.Effect().persist(ShowCommandsEvent).thenRun { englishBot.sendCommandsList(userData.chatId)}
+        return behavior.Effect().persist(ShowCommandsEvent).thenRun { state: ShowCommandsState -> state.sendBeforeStateMessage(englishBot) }
     }
 
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
         return ShowCommandsState(userData)
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendCommandsList(userData.chatId)
-    }
-
     override fun backState(): State {
         return this
     }
+
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {}
 }

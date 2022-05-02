@@ -21,19 +21,18 @@ class AddWordToDictionaryState(userData: UserData, private val dictionary: Dicti
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
         return behavior.Effect().persist(WordEnteredEvent(msg.update.message.text))
-            .thenRun { state: AddTranslationToWordState -> englishBot.justSendText("Enter the translation for ${state.word}:", userData.chatId) }
+            .thenRun { state: AddTranslationToWordState -> state.sendBeforeStateMessage(englishBot) }
     }
 
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
         return AddTranslationToWordState(userData, dictionary, (event as WordEnteredEvent).word)
     }
 
-    override fun runOnBack(englishBot: EnglishBot) {
-        englishBot.sendDictionaryInfo(userData.chatId, dictionary)
-    }
-
     override fun backState(): State {
         return ShowDictionaryState(userData, dictionary)
     }
 
+    override fun sendBeforeStateMessage(englishBot: EnglishBot) {
+        englishBot.justSendText("Please enter the word: ", userData.chatId)
+    }
 }

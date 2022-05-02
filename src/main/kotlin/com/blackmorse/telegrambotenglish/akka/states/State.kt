@@ -19,7 +19,7 @@ abstract class State(val userData: UserData) {
         return when (msg.update.message.text) {
             Commands.BACK.text -> {
                 behavior.Effect().persist(BackEvent)
-                    .thenRun{ runOnBack(englishBot)}
+                    .thenRun{ state: State -> state.sendBeforeStateMessage(englishBot) }
             }
             Commands.MAIN_MENU.text -> {
                 behavior.Effect().persist(MainMenuEvent)
@@ -47,7 +47,7 @@ abstract class State(val userData: UserData) {
 
     protected abstract fun doHandleEvent(clazz: Any, state: State, event: Event): State
 
-    abstract fun runOnBack(englishBot: EnglishBot)
+    abstract fun sendBeforeStateMessage(englishBot: EnglishBot)
 
     abstract fun backState(): State
 }
