@@ -24,7 +24,7 @@ class BotSupervisor(private val englishBot: EnglishBot,
                 context.log.info(msg.message.text)
                 val chatId = msg.message.chatId.toString()
                 if (!userActorsMap.containsKey(chatId)) {
-                    val behavior = EventSourcedUserActor.create(chatId, englishBot)
+                    val behavior = UserSourcedActor.create(chatId, englishBot)
                     val actorRef = context.spawn(behavior, "userActor_$chatId")
                     userActorsMap[chatId] = actorRef
                 }
