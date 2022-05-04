@@ -8,9 +8,12 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameData
+import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameState
 
 object AddWordEvent : Event
 object DeleteWordEvent : Event
+object StartGameEvent : Event
 
 class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : State(userData) {
     override fun doHandleMessage(
@@ -18,14 +21,22 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
         englishBot: EnglishBot,
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
-        return if (msg.update.message.text == Commands.ADD_WORD.text) {
-            behavior.Effect().persist(AddWordEvent)
-                .thenRun{ state: AddWordToDictionaryState -> state.sendBeforeStateMessage(englishBot) }
-        } else if(msg.update.message.text == Commands.DELETE_WORD.text) {
-            behavior.Effect().persist(DeleteWordEvent)
-                .thenRun { state: DeleteWordFromDictionaryState -> state.sendBeforeStateMessage(englishBot) }
-        } else {
-            behavior.Effect().none().thenNoReply()
+        return when (msg.update.message.text) {
+            Commands.ADD_WORD.text -> {
+                behavior.Effect().persist(AddWordEvent)
+                    .thenRun{ state: AddWordToDictionaryState -> state.sendBeforeStateMessage(englishBot) }
+            }
+            Commands.DELETE_WORD.text -> {
+                behavior.Effect().persist(DeleteWordEvent)
+                    .thenRun { state: DeleteWordFromDictionaryState -> state.sendBeforeStateMessage(englishBot) }
+            }
+            Commands.START_GAME.text -> {
+                behavior.Effect().persist(StartGameEvent)
+                    .thenRun { state: TwoColumnsGameState -> state.sendBeforeStateMessage(englishBot) }
+            }
+            else -> {
+                behavior.Effect().none().thenNoReply()
+            }
         }
     }
 
@@ -33,6 +44,7 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
         return when (clazz) {
             AddWordEvent::class.java -> AddWordToDictionaryState(userData, dictionary)
             DeleteWordEvent::class.java -> DeleteWordFromDictionaryState(userData, dictionary)
+            StartGameEvent::class.java -> TwoColumnsGameState(userData, dictionary, TwoColumnsGameData.init(dictionary))
             else -> this
         }
     }

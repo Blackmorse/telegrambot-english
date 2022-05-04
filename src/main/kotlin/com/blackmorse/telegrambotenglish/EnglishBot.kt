@@ -6,6 +6,7 @@ import akka.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
+import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameData
 import org.slf4j.event.Level
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.TelegramBotsApi
@@ -62,6 +63,7 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
 
         val builder = ReplyKeyboardMarkup.builder()
         builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.ADD_WORD.text), KeyboardButton(Commands.DELETE_WORD.text))))
+        builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.START_GAME.text))))
         val msg = createMessage(chatId, text, builder)
         sendApiMethod(msg)
     }
@@ -87,6 +89,19 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
 
         val text = dictsWithIndex.joinToString("\n") { "${it.index + 1}. ${it.value}" }
         val msg = createMessage(chatId, "Select dictionary or actions: \n$text", builder)
+        sendApiMethod(msg)
+    }
+
+    fun sendTwoColumnsGame(chatId: String, gameData: TwoColumnsGameData) {
+        val builder = ReplyKeyboardMarkup.builder()
+
+        gameData.leftColumn.zip(gameData.rightColumn).forEach { (left, right) ->
+            val prefix = gameData.leftSelectedWord.map { if (it == left) ">> " else "" }.orElseGet { "" }
+            val postfix = gameData.leftSelectedWord.map { if (it == left) " << " else "" }.orElseGet { "" }
+            builder.keyboardRow(KeyboardRow(listOf(KeyboardButton("$prefix$left$postfix"), KeyboardButton(right))))
+        }
+
+        val msg = createMessage(chatId, "Find matches", builder)
         sendApiMethod(msg)
     }
 }
