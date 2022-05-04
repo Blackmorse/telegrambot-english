@@ -1,17 +1,27 @@
 package com.blackmorse.telegrambotenglish.akka.states.games
 
 import com.blackmorse.telegrambotenglish.akka.Dictionary
+import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
+import com.blackmorse.telegrambotenglish.akka.states.State
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.math.min
 import kotlin.random.Random
 
+
+interface GameData {
+    fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State
+}
+
 data class TwoColumnsGameData(val words: List<WordWithTranslation>,
                               val leftColumn: List<String>,
                               val rightColumn: List<String>,
                               val leftSelectedWord: Optional<String>
-) {
+) : GameData {
+    override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
+        return TwoColumnsGameState(userData, dictionary, this, chainGamesData)
+    }
     fun checkRightWord(word: String): Optional<WordWithTranslation> {
         if (!leftSelectedWord.isPresent) return Optional.empty()
         val leftWord = leftSelectedWord.get()
@@ -27,7 +37,7 @@ data class TwoColumnsGameData(val words: List<WordWithTranslation>,
         fun init(dictionary: Dictionary): TwoColumnsGameData {
             val words = dictionary.words
             val indexes = mutableSetOf<Int>()
-            val random = Random(System.currentTimeMillis())
+            val random = Random(System.nanoTime())
             while (indexes.size < min(4, words.size)) {
                 indexes.add(random.nextInt(words.size))
             }

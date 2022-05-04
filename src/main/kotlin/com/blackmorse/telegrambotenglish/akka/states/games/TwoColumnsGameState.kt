@@ -12,11 +12,16 @@ import com.blackmorse.telegrambotenglish.akka.states.State
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
+interface GameState {
+    val chainGamesData: List<GameData>
+}
+
 data class LeftColumnSelectedEvent(
     @JsonProperty("selected")
     val selected: String) : Event
 
-class TwoColumnsGameState(userData: UserData, val dictionary: Dictionary, val gameData: TwoColumnsGameData) : State(userData) {
+class TwoColumnsGameState(userData: UserData, val dictionary: Dictionary,
+                          val gameData: TwoColumnsGameData, override val chainGamesData: List<GameData>) : State(userData), GameState {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
@@ -33,7 +38,7 @@ class TwoColumnsGameState(userData: UserData, val dictionary: Dictionary, val ga
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
         return when (clazz) {
             LeftColumnSelectedEvent::class.java ->
-                TwoColumnsGameLeftColumnSelectedState(userData, dictionary, gameData.copy(leftSelectedWord = Optional.of((event as LeftColumnSelectedEvent).selected)))
+                TwoColumnsGameLeftColumnSelectedState(userData, dictionary, gameData.copy(leftSelectedWord = Optional.of((event as LeftColumnSelectedEvent).selected)), chainGamesData)
             else -> this
         }
     }

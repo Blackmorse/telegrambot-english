@@ -44,7 +44,15 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
         return when (clazz) {
             AddWordEvent::class.java -> AddWordToDictionaryState(userData, dictionary)
             DeleteWordEvent::class.java -> DeleteWordFromDictionaryState(userData, dictionary)
-            StartGameEvent::class.java -> TwoColumnsGameState(userData, dictionary, TwoColumnsGameData.init(dictionary))
+            StartGameEvent::class.java -> {
+                val datas = listOf(
+                    TwoColumnsGameData.init(dictionary),
+                    TwoColumnsGameData.init(dictionary),
+                    TwoColumnsGameData.init(dictionary)
+                )
+
+                datas[0].createState(userData, dictionary, datas - datas[0])
+            }
             else -> this
         }
     }

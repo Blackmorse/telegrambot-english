@@ -19,7 +19,9 @@ data class WordGuessedEvent(
 
 object WordNotGuessedEvent : Event
 
-class TwoColumnsGameLeftColumnSelectedState(userData: UserData, val dictionary: Dictionary, val gameData: TwoColumnsGameData) : State(userData) {
+class TwoColumnsGameLeftColumnSelectedState(userData: UserData, val dictionary: Dictionary,
+                                            val gameData: TwoColumnsGameData,
+                                            override val chainGamesData: List<GameData>) : State(userData), GameState {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
@@ -43,7 +45,11 @@ class TwoColumnsGameLeftColumnSelectedState(userData: UserData, val dictionary: 
         return when (clazz) {
             WordGuessedEvent::class.java -> {
                 if (gameData.words.size == 1) {
-                    ShowDictionaryState(userData, dictionary)
+                    if (chainGamesData.isEmpty()) {
+                        ShowDictionaryState(userData, dictionary)
+                    } else {
+                        chainGamesData[0].createState(userData, dictionary, chainGamesData - chainGamesData[0])
+                    }
                 } else {
                     val wgEvent = event as WordGuessedEvent
                     val newWords = gameData.words - wgEvent.wordWithTranslation
@@ -51,7 +57,7 @@ class TwoColumnsGameLeftColumnSelectedState(userData: UserData, val dictionary: 
                     val newRightColumn = gameData.rightColumn - wgEvent.wordWithTranslation.translation
 
                     val newGameData = TwoColumnsGameData(newWords, newLeftColumn, newRightColumn, Optional.empty())
-                    TwoColumnsGameState(userData, dictionary, newGameData)
+                    TwoColumnsGameState(userData, dictionary, newGameData, chainGamesData)
                 }
             }
             WordNotGuessedEvent -> this
