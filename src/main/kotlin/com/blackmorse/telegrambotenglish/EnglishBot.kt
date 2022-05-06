@@ -6,7 +6,7 @@ import akka.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
-import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameData
+import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameData
 import org.slf4j.event.Level
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.TelegramBotsApi

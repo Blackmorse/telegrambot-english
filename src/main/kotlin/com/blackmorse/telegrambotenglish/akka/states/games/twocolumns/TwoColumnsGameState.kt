@@ -1,4 +1,4 @@
-package com.blackmorse.telegrambotenglish.akka.states.games
+package com.blackmorse.telegrambotenglish.akka.states.games.twocolumns
 
 import akka.persistence.typed.javadsl.Effect
 import akka.persistence.typed.javadsl.EventSourcedBehavior
@@ -9,19 +9,18 @@ import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
+import com.blackmorse.telegrambotenglish.akka.states.games.GameData
+import com.blackmorse.telegrambotenglish.akka.states.games.GameState
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
-
-interface GameState {
-    val chainGamesData: List<GameData>
-}
 
 data class LeftColumnSelectedEvent(
     @JsonProperty("selected")
     val selected: String) : Event
 
 class TwoColumnsGameState(userData: UserData, val dictionary: Dictionary,
-                          val gameData: TwoColumnsGameData, override val chainGamesData: List<GameData>) : State(userData), GameState {
+                          val gameData: TwoColumnsGameData, override val chainGamesData: List<GameData>) : State(userData),
+    GameState {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

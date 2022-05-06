@@ -8,8 +8,9 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
-import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameData
-import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameState
+import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameData
+import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameState
+import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameData
 
 object AddWordEvent : Event
 object DeleteWordEvent : Event
@@ -47,7 +48,9 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
             StartGameEvent::class.java -> {
                 val datas = listOf(
                     TwoColumnsGameData.init(dictionary),
-                    TwoColumnsGameData.init(dictionary),
+                    TypeTranslationGameData.init(dictionary),
+                    TypeTranslationGameData.init(dictionary),
+                    TypeTranslationGameData.init(dictionary),
                     TwoColumnsGameData.init(dictionary)
                 )
 

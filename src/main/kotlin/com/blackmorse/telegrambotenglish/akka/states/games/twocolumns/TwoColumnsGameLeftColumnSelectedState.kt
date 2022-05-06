@@ -1,4 +1,4 @@
-package com.blackmorse.telegrambotenglish.akka.states.games
+package com.blackmorse.telegrambotenglish.akka.states.games.twocolumns
 
 import akka.persistence.typed.javadsl.Effect
 import akka.persistence.typed.javadsl.EventSourcedBehavior
@@ -10,6 +10,8 @@ import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
+import com.blackmorse.telegrambotenglish.akka.states.games.GameData
+import com.blackmorse.telegrambotenglish.akka.states.games.GameState
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 

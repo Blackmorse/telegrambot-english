@@ -6,8 +6,9 @@ import akka.persistence.typed.javadsl.*
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.states.*
-import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameLeftColumnSelectedState
-import com.blackmorse.telegrambotenglish.akka.states.games.TwoColumnsGameState
+import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameLeftColumnSelectedState
+import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameState
+import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameState
 
 interface Event
 object ShowCommandsEvent: Event
@@ -61,7 +62,8 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
                 AddTranslationToWordState::class.java,
                 DeleteWordFromDictionaryState::class.java,
                 TwoColumnsGameState::class.java,
-                TwoColumnsGameLeftColumnSelectedState::class.java
+                TwoColumnsGameLeftColumnSelectedState::class.java,
+                TypeTranslationGameState::class.java
             ))
         }
     }

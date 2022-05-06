@@ -1,18 +1,14 @@
-package com.blackmorse.telegrambotenglish.akka.states.games
+package com.blackmorse.telegrambotenglish.akka.states.games.twocolumns
 
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.states.State
+import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.math.min
 import kotlin.random.Random
-
-
-interface GameData {
-    fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State
-}
 
 data class TwoColumnsGameData(val words: List<WordWithTranslation>,
                               val leftColumn: List<String>,
