@@ -6,6 +6,7 @@ import akka.persistence.typed.javadsl.*
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.states.*
+import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoicesGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameLeftColumnSelectedState
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameState
@@ -63,7 +64,8 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
                 DeleteWordFromDictionaryState::class.java,
                 TwoColumnsGameState::class.java,
                 TwoColumnsGameLeftColumnSelectedState::class.java,
-                TypeTranslationGameState::class.java
+                TypeTranslationGameState::class.java,
+                FourChoicesGameState::class.java
             ))
         }
     }

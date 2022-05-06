@@ -6,6 +6,7 @@ import akka.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
+import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoicesGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameData
 import org.slf4j.event.Level
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -102,6 +103,17 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         }
 
         val msg = createMessage(chatId, "Find matches", builder)
+        sendApiMethod(msg)
+    }
+
+    fun sendFourChoicesGame(chatId: String, gameData: FourChoicesGameData) {
+        val builder = ReplyKeyboardMarkup.builder()
+
+        gameData.translations.forEach {
+            builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(it))))
+        }
+
+        val msg = createMessage(chatId, "Select translation for ${gameData.word.word}:", builder)
         sendApiMethod(msg)
     }
 }
