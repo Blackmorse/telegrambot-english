@@ -24,5 +24,9 @@ data class FourChoicesGameData(val word: WordWithTranslation,
 
             return FourChoicesGameData(word, translations.toList())
         }
+
+        fun reverseInit(dictionary: Dictionary, word: WordWithTranslation, random: Random): FourChoicesGameData {
+            return init(dictionary.reverse(), word.reverse(), random)
+        }
     }
 }

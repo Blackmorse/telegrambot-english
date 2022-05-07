@@ -124,7 +124,9 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
 
         val rows = gameData.mixedLetters.chunked((gameData.mixedLetters.size + 2) / 3)
         rows.forEach {
-            builder.keyboardRow(KeyboardRow(it.map { char -> KeyboardButton(char.toString()) }))
+            builder.keyboardRow(KeyboardRow(it.map { char -> KeyboardButton(
+                if (char == ' ') "_" else char.toString()
+            ) }))
         }
 
         val msg = createMessage(chatId, "Select next letter for word ${gameData.word.word}:\n ${gameData.selectedChars.joinToString("")}", builder)

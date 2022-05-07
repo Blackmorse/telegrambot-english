@@ -57,22 +57,35 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
             gamesData.add(gameData)
         }
 
+        wordsSet.clear()
+        while(wordsSet.size < dictionary.words.size) {
+            val gameData = TwoColumnsGameData.reverseInit(dictionary, random)
+            wordsSet.addAll(gameData.words)
+            gamesData.add(gameData)
+        }
+
         return gamesData
     }
 
     private fun createTypeTranslationGames(dictionary: Dictionary): List<GameData> {
         return dictionary.words
-            .map { TypeTranslationGameData.init(it) }
+            .map { TypeTranslationGameData.init(it) } +
+                dictionary.words
+                .map { TypeTranslationGameData.reverseInit(it) }
     }
 
     private fun createFourChoicesGameData(dictionary: Dictionary, random: Random): List<GameData> {
         return dictionary.words
-            .map { FourChoicesGameData.init(dictionary, it, random) }
+            .map { FourChoicesGameData.init(dictionary, it, random) } +
+            dictionary.words
+                .map { FourChoicesGameData.reverseInit(dictionary, it, random) }
     }
 
     private fun createCombineLettersGameData(dictionary: Dictionary, random: Random): List<GameData> {
         return dictionary.words
-            .map { CombineLettersGameData.init(it, random) }
+            .map { CombineLettersGameData.init(it, random) } +
+            dictionary.words
+                .map { CombineLettersGameData.reverseInit(it, random) }
     }
 
     private fun createGames(dictionary: Dictionary, random: Random): List<GameData> {

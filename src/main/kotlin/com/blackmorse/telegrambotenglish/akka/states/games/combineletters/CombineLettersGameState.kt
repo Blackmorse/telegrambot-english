@@ -32,7 +32,7 @@ class CombineLettersGameState(userData: UserData, val dictionary: Dictionary,
             behavior.Effect().none()
                 .thenRun{ englishBot.justSendText("Irrelevant input", userData.chatId) }
         } else {
-            val char = message[0]
+            val char = if (message[0] == '_') ' ' else message[0]
             val startOfString = gameData.selectedChars.joinToString("") + char
             if (gameData.word.translation.startsWith(startOfString)) {
                 behavior.Effect().persist(CorrectLetterSelectedEvent(char))

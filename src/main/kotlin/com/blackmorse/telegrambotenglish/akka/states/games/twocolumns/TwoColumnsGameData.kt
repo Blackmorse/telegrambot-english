@@ -46,5 +46,9 @@ data class TwoColumnsGameData(val words: List<WordWithTranslation>,
                 rightColumn= rightColumn,
                 leftSelectedWord = Optional.empty())
         }
+
+        fun reverseInit(dictionary: Dictionary, random: kotlin.random.Random): TwoColumnsGameData {
+            return init(dictionary.reverse(), random)
+        }
     }
 }

@@ -19,5 +19,9 @@ data class CombineLettersGameData(val word: WordWithTranslation,
 
             return CombineLettersGameData(word, mixedLetters, emptyList())
         }
+
+        fun reverseInit(word: WordWithTranslation, random: Random): CombineLettersGameData {
+            return init(word.reverse(), random)
+        }
     }
 }
