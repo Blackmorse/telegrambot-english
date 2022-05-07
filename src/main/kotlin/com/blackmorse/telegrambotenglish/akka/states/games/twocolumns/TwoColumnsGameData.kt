@@ -30,10 +30,9 @@ data class TwoColumnsGameData(val words: List<WordWithTranslation>,
     }
 
     companion object {
-        fun init(dictionary: Dictionary): TwoColumnsGameData {
+        fun init(dictionary: Dictionary, random: Random): TwoColumnsGameData {
             val words = dictionary.words
             val indexes = mutableSetOf<Int>()
-            val random = Random(System.nanoTime())
             while (indexes.size < min(4, words.size)) {
                 indexes.add(random.nextInt(words.size))
             }

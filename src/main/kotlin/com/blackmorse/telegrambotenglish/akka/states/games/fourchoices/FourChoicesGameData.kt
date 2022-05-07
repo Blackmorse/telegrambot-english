@@ -15,10 +15,7 @@ data class FourChoicesGameData(val word: WordWithTranslation,
     }
 
     companion object {
-        fun init(dictionary: Dictionary): FourChoicesGameData {
-            val random = Random(System.nanoTime())
-            val word = dictionary.words[random.nextInt(dictionary.words.size)]
-
+        fun init(dictionary: Dictionary, word: WordWithTranslation, random: Random): FourChoicesGameData {
             val translations = mutableSetOf<String>()
             translations.add(word.translation)
             while(translations.size < min(4, dictionary.words.size)) {

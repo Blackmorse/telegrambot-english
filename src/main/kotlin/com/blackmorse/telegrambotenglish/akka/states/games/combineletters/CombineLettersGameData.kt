@@ -14,10 +14,7 @@ data class CombineLettersGameData(val word: WordWithTranslation,
     }
 
     companion object {
-        fun init(dictionary: Dictionary): CombineLettersGameData {
-            val random = Random(System.nanoTime())
-            val word = dictionary.words[random.nextInt(dictionary.words.size)]
-
+        fun init(word: WordWithTranslation, random: Random): CombineLettersGameData {
             val mixedLetters = word.translation.toCharArray().apply{ this.shuffle(random) }.toList()
 
             return CombineLettersGameData(word, mixedLetters, emptyList())

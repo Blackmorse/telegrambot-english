@@ -13,9 +13,8 @@ class TypeTranslationGameData(val word: WordWithTranslation) : GameData {
     }
 
     companion object {
-        fun init(dictionary: Dictionary): TypeTranslationGameData {
-            val random = Random(System.nanoTime())
-            return TypeTranslationGameData(dictionary.words[random.nextInt(dictionary.words.size)])
+        fun init(word: WordWithTranslation): TypeTranslationGameData {
+            return TypeTranslationGameData(word)
         }
     }
 }
