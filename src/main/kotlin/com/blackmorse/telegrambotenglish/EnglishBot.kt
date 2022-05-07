@@ -6,6 +6,8 @@ import akka.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
+import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameData
+import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoicesGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameData
 import org.slf4j.event.Level
@@ -114,6 +116,18 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         }
 
         val msg = createMessage(chatId, "Select translation for ${gameData.word.word}:", builder)
+        sendApiMethod(msg)
+    }
+
+    fun sendCombineLettersGameState(chatId: String, gameData: CombineLettersGameData) {
+        val builder = ReplyKeyboardMarkup.builder()
+
+        val rows = gameData.mixedLetters.chunked((gameData.mixedLetters.size + 2) / 3)
+        rows.forEach {
+            builder.keyboardRow(KeyboardRow(it.map { char -> KeyboardButton(char.toString()) }))
+        }
+
+        val msg = createMessage(chatId, "Select next letter for word ${gameData.word.word}:\n ${gameData.selectedChars.joinToString("")}", builder)
         sendApiMethod(msg)
     }
 }

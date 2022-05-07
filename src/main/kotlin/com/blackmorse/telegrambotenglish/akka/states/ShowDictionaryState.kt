@@ -8,6 +8,7 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoicesGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameState
@@ -34,7 +35,7 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
             }
             Commands.START_GAME.text -> {
                 behavior.Effect().persist(StartGameEvent)
-                    .thenRun { state: TwoColumnsGameState -> state.sendBeforeStateMessage(englishBot) }
+                    .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
             }
             else -> {
                 behavior.Effect().none().thenNoReply()
@@ -48,6 +49,13 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
             DeleteWordEvent::class.java -> DeleteWordFromDictionaryState(userData, dictionary)
             StartGameEvent::class.java -> {
                 val datas = listOf(
+                    CombineLettersGameData.init(dictionary),
+                    CombineLettersGameData.init(dictionary),
+                    CombineLettersGameData.init(dictionary),
+                    CombineLettersGameData.init(dictionary),
+                    CombineLettersGameData.init(dictionary),
+                    CombineLettersGameData.init(dictionary),
+                    CombineLettersGameData.init(dictionary),
                     TwoColumnsGameData.init(dictionary),
                     TypeTranslationGameData.init(dictionary),
                     FourChoicesGameData.init(dictionary),
