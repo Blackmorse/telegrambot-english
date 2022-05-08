@@ -67,7 +67,8 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
                 TwoColumnsGameLeftColumnSelectedState::class.java,
                 TypeTranslationGameState::class.java,
                 FourChoicesGameState::class.java,
-                CombineLettersGameState::class.java
+                CombineLettersGameState::class.java,
+                ImportDictionaryState::class.java
             ))
         }
     }

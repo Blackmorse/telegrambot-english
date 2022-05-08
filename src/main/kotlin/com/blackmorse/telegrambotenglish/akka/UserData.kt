@@ -1,10 +1,15 @@
 package com.blackmorse.telegrambotenglish.akka
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
 data class UserData(val chatId: String, val dictionaries: List<Dictionary>)
 
-data class Dictionary(val name: String, val words: List<WordWithTranslation>) {
+data class Dictionary(
+    @JsonProperty("name")
+    val name: String,
+    @JsonProperty("words")
+    val words: List<WordWithTranslation>) {
     fun reverse(): Dictionary = Dictionary(name, words.map { it.reverse() })
 
     companion object {
@@ -19,7 +24,11 @@ data class Dictionary(val name: String, val words: List<WordWithTranslation>) {
     }
 }
 
-data class WordWithTranslation(val word: String, val translation: String) {
+data class WordWithTranslation(
+    @JsonProperty("word")
+    val word: String,
+    @JsonProperty("translation")
+    val translation: String) {
     fun reverse(): WordWithTranslation = WordWithTranslation(translation, word)
 
     override fun toString(): String {

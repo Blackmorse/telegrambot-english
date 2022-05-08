@@ -6,6 +6,7 @@ enum class Commands(val text: String) {
     SHOW_DICTIONARIES("Show dictionaries"),
     ADD_DICTIONARY("Add Dictionary"),
     DELETE_DICTIONARY("Delete Dictionary"),
+    IMPORT_DICTIONARY("Import Dictionary"),
     ADD_WORD("Add Word"),
     DELETE_WORD("Delete Word"),
     START_GAME("Start game")

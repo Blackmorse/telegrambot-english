@@ -12,6 +12,8 @@ data class SelectDictionaryEvent(
     val dictionaryName: String
     ) : Event
 
+object ImportDictionaryEvent : Event
+
 class ShowDictionariesState(userData: UserData) : State(userData) {
     override fun doHandleMessage(msg: TelegramMessage,
                       englishBot: EnglishBot,
@@ -24,6 +26,10 @@ class ShowDictionariesState(userData: UserData) : State(userData) {
             Commands.DELETE_DICTIONARY.text -> {
                 behavior.Effect().persist(DeleteDictionaryEvent)
                     .thenRun{ state: DeleteDictionaryState -> state.sendBeforeStateMessage(englishBot) }
+            }
+            Commands.IMPORT_DICTIONARY.text -> {
+                behavior.Effect().persist(ImportDictionaryEvent)
+                    .thenRun{ state: State -> state.sendBeforeStateMessage(englishBot) }
             }
             else -> {
                 val dictionaryNameOpt = Dictionary.getItemFromIndexedList(msg.update.message.text)
@@ -42,6 +48,7 @@ class ShowDictionariesState(userData: UserData) : State(userData) {
             AddDictionaryEvent::class.java -> AddDictionaryState(userData)
             DeleteDictionaryEvent::class.java -> DeleteDictionaryState(userData)
             SelectDictionaryEvent::class.java -> ShowDictionaryState(userData, userData.dictionaries.find { it.name == (event as SelectDictionaryEvent).dictionaryName }!!)
+            ImportDictionaryEvent::class.java -> ImportDictionaryState(userData)
             else -> this
         }
     }

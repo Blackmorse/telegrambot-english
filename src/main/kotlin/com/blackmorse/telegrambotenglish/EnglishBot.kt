@@ -62,7 +62,7 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
             .map { "${it.index}. ${it.value}"}
             .joinToString ( "\n" )
 
-        val text = "${dictionary.name} \n\n$wordsText"
+        val text = "${dictionary.name}\n\n$wordsText"
 
         val builder = ReplyKeyboardMarkup.builder()
         builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.ADD_WORD.text), KeyboardButton(Commands.DELETE_WORD.text))))
@@ -80,12 +80,13 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         }
 
         val addButton = KeyboardButton(Commands.ADD_DICTIONARY.text)
+        val importButton = KeyboardButton(Commands.IMPORT_DICTIONARY.text)
 
         if (showDictCommands) {
             val dictionaryActionButtons = if (dictsList.isEmpty()) {
-                listOf(addButton)
+                listOf(addButton, importButton)
             } else {
-                listOf(addButton, KeyboardButton(Commands.DELETE_DICTIONARY.text))
+                listOf(addButton, importButton, KeyboardButton(Commands.DELETE_DICTIONARY.text))
             }
             builder.keyboardRow(KeyboardRow(dictionaryActionButtons))
         }
