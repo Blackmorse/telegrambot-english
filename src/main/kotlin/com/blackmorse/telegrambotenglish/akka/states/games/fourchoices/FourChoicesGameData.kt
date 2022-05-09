@@ -22,7 +22,7 @@ data class FourChoicesGameData(val word: WordWithTranslation,
                 translations.add(dictionary.words[random.nextInt(dictionary.words.size)].translation)
             }
 
-            return FourChoicesGameData(word, translations.toList())
+            return FourChoicesGameData(word, translations.shuffled(random).toList())
         }
 
         fun reverseInit(dictionary: Dictionary, word: WordWithTranslation, random: Random): FourChoicesGameData {

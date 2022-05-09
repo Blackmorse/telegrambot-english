@@ -103,7 +103,11 @@ class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : Stat
                 val seed = (event as StartGameEvent).seed
                 val random = Random(seed)
                 val datas = createGames(dictionary, random)
-                datas[0].createState(userData, dictionary, datas - datas[0])
+                if (datas.isEmpty()) {
+                    this
+                } else {
+                    datas[0].createState(userData, dictionary, datas - datas[0])
+                }
             }
             else -> this
         }
