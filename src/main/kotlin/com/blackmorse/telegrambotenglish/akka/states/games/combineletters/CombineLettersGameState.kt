@@ -30,7 +30,10 @@ class CombineLettersGameState(userData: UserData, val dictionary: Dictionary,
         val message = msg.update.message.text
         return if (message.length > 1) {
             behavior.Effect().none()
-                .thenRun{ englishBot.justSendText("Irrelevant input", userData.chatId) }
+                .thenRun{
+                    englishBot.justSendText("Irrelevant input", userData.chatId)
+                    sendBeforeStateMessage(englishBot)
+                }
         } else {
             val char = if (message[0] == '_') ' ' else message[0]
             val startOfString = gameData.selectedChars.joinToString("") + char
