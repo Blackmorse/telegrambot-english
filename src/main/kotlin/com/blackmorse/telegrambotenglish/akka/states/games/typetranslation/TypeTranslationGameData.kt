@@ -5,8 +5,11 @@ import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
+import com.fasterxml.jackson.annotation.JsonProperty
 
-class TypeTranslationGameData(val word: WordWithTranslation) : GameData {
+class TypeTranslationGameData(
+    @JsonProperty("word")
+    val word: WordWithTranslation) : GameData {
     override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
         return TypeTranslationGameState(userData, dictionary, this, chainGamesData)
     }

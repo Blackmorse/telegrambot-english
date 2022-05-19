@@ -20,8 +20,10 @@ data class CorrentTranslationSelectedEvent(
 
 object WrongTranslationSelectedEvent : Event
 
-class FourChoicesGameState(userData: UserData, val dictionary: Dictionary,
-                           val gameData: FourChoicesGameData, override val chainGamesData: List<GameData>) : State(userData), GameState {
+class FourChoicesGameState(userData: UserData,
+                           dictionary: Dictionary,
+                           gameData: FourChoicesGameData,
+                           chainGamesData: List<GameData>) : GameState<FourChoicesGameData>(userData, dictionary, gameData, chainGamesData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

@@ -20,8 +20,10 @@ data class CorrectLetterSelectedEvent(
 
 object IncorrectLetterSelectedEvent : Event
 
-class CombineLettersGameState(userData: UserData, val dictionary: Dictionary,
-                              val gameData: CombineLettersGameData, override val chainGamesData: List<GameData>) : State(userData), GameState {
+class CombineLettersGameState(userData: UserData,
+                              dictionary: Dictionary,
+                              gameData: CombineLettersGameData,
+                              chainGamesData: List<GameData>) : GameState<CombineLettersGameData>(userData, dictionary, gameData, chainGamesData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

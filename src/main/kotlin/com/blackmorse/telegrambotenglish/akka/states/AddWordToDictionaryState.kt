@@ -14,7 +14,11 @@ data class WordEnteredEvent(
     val word: String
     ) : Event
 
-class AddWordToDictionaryState(userData: UserData, private val dictionary: Dictionary) : State(userData) {
+class AddWordToDictionaryState(
+    @JsonProperty("userData")
+    userData: UserData,
+    @JsonProperty("dictionary")
+    private val dictionary: Dictionary) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

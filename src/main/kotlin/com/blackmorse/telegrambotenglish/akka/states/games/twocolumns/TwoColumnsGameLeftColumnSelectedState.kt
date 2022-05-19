@@ -21,9 +21,10 @@ data class WordGuessedEvent(
 
 object WordNotGuessedEvent : Event
 
-class TwoColumnsGameLeftColumnSelectedState(userData: UserData, val dictionary: Dictionary,
-                                            val gameData: TwoColumnsGameData,
-                                            override val chainGamesData: List<GameData>) : State(userData), GameState {
+class TwoColumnsGameLeftColumnSelectedState(userData: UserData,
+                                            dictionary: Dictionary,
+                                            gameData: TwoColumnsGameData,
+                                            chainGamesData: List<GameData>) : GameState<TwoColumnsGameData>(userData, dictionary, gameData, chainGamesData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

@@ -22,7 +22,11 @@ object AddWordEvent : Event
 object DeleteWordEvent : Event
 data class StartGameEvent(@JsonProperty("seed") val seed: Long) : Event
 
-class ShowDictionaryState(userData: UserData, val dictionary: Dictionary) : State(userData) {
+class ShowDictionaryState(
+    @JsonProperty("userData")
+    userData: UserData,
+    @JsonProperty("dictionary")
+    val dictionary: Dictionary) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

@@ -14,7 +14,9 @@ data class DictionaryDeletedEvent(
     val dictionaryName: String
     ) : Event
 
-class DeleteDictionaryState(userData: UserData) : State(userData) {
+class DeleteDictionaryState(
+    @JsonProperty("userData")
+    userData: UserData) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

@@ -7,8 +7,11 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.ShowCommandsEvent
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.fasterxml.jackson.annotation.JsonProperty
 
-class HelloScreenState(userData: UserData) : State(userData) {
+class HelloScreenState(
+    @JsonProperty("userData")
+    userData: UserData) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

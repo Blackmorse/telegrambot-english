@@ -14,7 +14,9 @@ data class SelectDictionaryEvent(
 
 object ImportDictionaryEvent : Event
 
-class ShowDictionariesState(userData: UserData) : State(userData) {
+class ShowDictionariesState(
+    @JsonProperty("userData")
+    userData: UserData) : State(userData) {
     override fun doHandleMessage(msg: TelegramMessage,
                       englishBot: EnglishBot,
                       behavior: EventSourcedBehavior<TelegramMessage, Event, State>): Effect<Event,  State> {

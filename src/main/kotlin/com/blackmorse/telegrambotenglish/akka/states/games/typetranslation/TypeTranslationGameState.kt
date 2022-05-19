@@ -20,8 +20,10 @@ data class CorrectTranslationTypedEvent(
 
 object WrongTranslationTypedEvent : Event
 
-class TypeTranslationGameState(userData: UserData, val dictionary: Dictionary, val gameData: TypeTranslationGameData,
-                               override val chainGamesData: List<GameData>) : State(userData), GameState {
+class TypeTranslationGameState(userData: UserData,
+                               dictionary: Dictionary,
+                               gameData: TypeTranslationGameData,
+                               chainGamesData: List<GameData>) : GameState<TypeTranslationGameData>(userData, dictionary, gameData, chainGamesData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

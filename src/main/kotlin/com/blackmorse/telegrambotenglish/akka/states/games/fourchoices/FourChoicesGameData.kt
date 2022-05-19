@@ -5,11 +5,15 @@ import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
+import com.fasterxml.jackson.annotation.JsonProperty
 import kotlin.math.min
 import kotlin.random.Random
 
-data class FourChoicesGameData(val word: WordWithTranslation,
-                                val translations: List<String>) : GameData {
+data class FourChoicesGameData(
+    @JsonProperty("word")
+    val word: WordWithTranslation,
+    @JsonProperty("translations")
+    val translations: List<String>) : GameData {
     override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
         return FourChoicesGameState(userData, dictionary, this, chainGamesData)
     }

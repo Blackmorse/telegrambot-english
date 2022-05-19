@@ -14,7 +14,11 @@ data class WordDeletedEvent(
     val word: String
 ): Event
 
-class DeleteWordFromDictionaryState(userData: UserData, val dictionary: Dictionary) : State(userData) {
+class DeleteWordFromDictionaryState(
+    @JsonProperty("userData")
+    userData: UserData,
+    @JsonProperty("dictionary")
+    val dictionary: Dictionary) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

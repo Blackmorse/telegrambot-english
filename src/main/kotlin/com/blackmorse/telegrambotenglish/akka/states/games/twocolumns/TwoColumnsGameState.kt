@@ -18,9 +18,10 @@ data class LeftColumnSelectedEvent(
     @JsonProperty("selected")
     val selected: String) : Event
 
-class TwoColumnsGameState(userData: UserData, val dictionary: Dictionary,
-                          val gameData: TwoColumnsGameData, override val chainGamesData: List<GameData>) : State(userData),
-    GameState {
+class TwoColumnsGameState(userData: UserData,
+                          dictionary: Dictionary,
+                          gameData: TwoColumnsGameData,
+                          chainGamesData: List<GameData>) : GameState<TwoColumnsGameData>(userData, dictionary, gameData, chainGamesData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

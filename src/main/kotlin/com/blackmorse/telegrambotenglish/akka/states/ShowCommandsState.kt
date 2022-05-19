@@ -8,8 +8,11 @@ import com.blackmorse.telegrambotenglish.akka.ShowDictionariesEvent
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.fasterxml.jackson.annotation.JsonProperty
 
-class ShowCommandsState(userData: UserData) : State(userData) {
+class ShowCommandsState(
+    @JsonProperty("userData")
+    userData: UserData) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

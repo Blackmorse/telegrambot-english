@@ -17,7 +17,9 @@ data class DictionaryImportedEvent(
 
 object IncorrectDictionaryFormatEvent : Event
 
-class ImportDictionaryState(userData: UserData) : State(userData) {
+class ImportDictionaryState(
+    @JsonProperty("userData")
+    userData: UserData) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

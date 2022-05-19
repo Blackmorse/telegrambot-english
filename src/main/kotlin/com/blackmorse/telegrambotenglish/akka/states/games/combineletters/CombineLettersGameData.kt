@@ -5,10 +5,16 @@ import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
+import com.fasterxml.jackson.annotation.JsonProperty
 import kotlin.random.Random
 
-data class CombineLettersGameData(val word: WordWithTranslation,
-                                val mixedLetters: List<Char>, val selectedChars: List<Char>) : GameData {
+data class CombineLettersGameData(
+    @JsonProperty("word")
+    val word: WordWithTranslation,
+    @JsonProperty("mixedLetters")
+    val mixedLetters: List<Char>,
+    @JsonProperty("selectedChars")
+    val selectedChars: List<Char>) : GameData {
     override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
         return CombineLettersGameState(userData, dictionary, this, chainGamesData)
     }

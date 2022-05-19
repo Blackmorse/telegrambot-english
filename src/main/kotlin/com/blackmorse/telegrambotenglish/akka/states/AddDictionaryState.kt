@@ -14,7 +14,9 @@ data class DictionaryAddedEvent(
     val dictionaryName: String
     ) : Event
 
-class AddDictionaryState(userData: UserData) : State(userData) {
+class AddDictionaryState(
+    @JsonProperty("userData")
+    userData: UserData) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

@@ -50,6 +50,10 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
         return HelloScreenState(UserData(chatId, emptyList()))
     }
 
+    override fun retentionCriteria(): RetentionCriteria {
+        return RetentionCriteria.snapshotEvery(3, 3).withDeleteEventsOnSnapshot()
+    }
+
     companion object {
         fun create (chatId: String, englishBot: EnglishBot): Behavior<TelegramMessage> {
             return UserSourcedActor(chatId, englishBot,

@@ -15,7 +15,13 @@ data class TranslationToWordEnteredEvent(
     val translation: String
     ) : Event
 
-class AddTranslationToWordState(userData: UserData, val dictionary: Dictionary, val word: String) : State(userData) {
+class AddTranslationToWordState(
+    @JsonProperty("userData")
+    userData: UserData,
+    @JsonProperty("dictionary")
+    val dictionary: Dictionary,
+    @JsonProperty("word")
+    val word: String) : State(userData) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,

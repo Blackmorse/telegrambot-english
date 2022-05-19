@@ -3,7 +3,11 @@ package com.blackmorse.telegrambotenglish.akka
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
-data class UserData(val chatId: String, val dictionaries: List<Dictionary>)
+data class UserData(
+    @JsonProperty("chatId")
+    val chatId: String,
+    @JsonProperty("dictionaries")
+    val dictionaries: List<Dictionary>)
 
 data class Dictionary(
     @JsonProperty("name")
