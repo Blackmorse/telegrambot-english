@@ -1,0 +1,23 @@
+version: "3.7"
+networks:
+  englishbot_network:
+    name: englishbot_network
+
+services:
+  cassandra:
+    image: cassandra
+    container_name: cassandra
+    volumes:
+      - $VOLUME_PATH:/var/lib/cassandra
+    networks:
+      - englishbot_network
+    expose:
+      - "9042"
+
+  bot:
+    build: .
+    environment:
+      - CREDS=$BOT_CREDS
+    networks:
+      - englishbot_network
+
