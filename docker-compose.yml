@@ -16,8 +16,6 @@ services:
 
   bot:
     build: .
-    environment:
-      - CREDS=$BOT_CREDS
     networks:
       - englishbot_network
 

@@ -26,3 +26,5 @@ src/main/resources/application.properties
 .idea/
 build/
 .gradle/
+
+creds.txt

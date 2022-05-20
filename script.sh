@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew run --args='$CREDS'
+./gradlew run --args="$(cat ./creds.txt)"
