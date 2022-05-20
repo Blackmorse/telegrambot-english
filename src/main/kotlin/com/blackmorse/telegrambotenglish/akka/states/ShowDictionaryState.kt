@@ -16,6 +16,7 @@ import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumns
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameData
 import com.fasterxml.jackson.annotation.JsonProperty
+import kotlin.math.min
 import kotlin.random.Random
 
 object AddWordEvent : Event
@@ -55,14 +56,14 @@ class ShowDictionaryState(
         val gamesData = mutableListOf<TwoColumnsGameData>()
         val wordsSet = mutableSetOf<WordWithTranslation>()
 
-        while(wordsSet.size < dictionary.words.size) {
+        while(wordsSet.size < min(dictionary.words.size, dictionary.words.size / 4)) {
             val gameData = TwoColumnsGameData.init(dictionary, random)
             wordsSet.addAll(gameData.words)
             gamesData.add(gameData)
         }
 
         wordsSet.clear()
-        while(wordsSet.size < dictionary.words.size) {
+        while(wordsSet.size < min(dictionary.words.size, dictionary.words.size / 4)) {
             val gameData = TwoColumnsGameData.reverseInit(dictionary, random)
             wordsSet.addAll(gameData.words)
             gamesData.add(gameData)
@@ -71,10 +72,14 @@ class ShowDictionaryState(
         return gamesData
     }
 
-    private fun createTypeTranslationGames(dictionary: Dictionary): List<GameData> {
-        return dictionary.words
+    private fun createTypeTranslationGames(dictionary: Dictionary, random: Random): List<GameData> {
+        val words = dictionary.words.shuffled(random)
+        val firstPart = words.slice(IntRange(0, words.size / 2))
+        val secondPart = words - firstPart
+
+        return firstPart
             .map { TypeTranslationGameData.init(it) } +
-                dictionary.words
+                secondPart
                 .map { TypeTranslationGameData.reverseInit(it) }
     }
 
@@ -86,15 +91,19 @@ class ShowDictionaryState(
     }
 
     private fun createCombineLettersGameData(dictionary: Dictionary, random: Random): List<GameData> {
-        return dictionary.words
+        val words = dictionary.words.shuffled(random)
+        val firstPart = words.slice(IntRange(0, words.size / 2))
+        val secondPart = words - firstPart
+
+        return firstPart
             .map { CombineLettersGameData.init(it, random) } +
-            dictionary.words
+            secondPart
                 .map { CombineLettersGameData.reverseInit(it, random) }
     }
 
     private fun createGames(dictionary: Dictionary, random: Random): List<GameData> {
         return (createTwoColumnGames(dictionary, random) +
-            createTypeTranslationGames(dictionary) +
+            createTypeTranslationGames(dictionary, random) +
             createFourChoicesGameData(dictionary, random) +
             createCombineLettersGameData(dictionary, random)).shuffled(random)
     }
