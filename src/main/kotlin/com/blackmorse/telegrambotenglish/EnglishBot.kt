@@ -126,7 +126,9 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         val rows = gameData.mixedLetters.chunked((gameData.mixedLetters.size + 2) / 3)
         rows.forEach {
             builder.keyboardRow(KeyboardRow(it.map { char -> KeyboardButton(
-                if (char == ' ') "_" else char.toString()
+                if (char == ' ') "_"
+                else if(char == '+') "\u2705"
+                else char.toString()
             ) }))
         }
 

@@ -42,6 +42,8 @@ class CombineLettersGameState(userData: UserData,
             if (gameData.word.translation.startsWith(startOfString)) {
                 behavior.Effect().persist(CorrectLetterSelectedEvent(char))
                     .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
+            } else if(char == '\u2705') {
+                behavior.Effect().none()
             } else {
                 behavior.Effect().persist(IncorrectLetterSelectedEvent)
                     .thenRun { state: State ->
@@ -64,7 +66,12 @@ class CombineLettersGameState(userData: UserData,
                        chainGamesData[0].createState(userData, dictionary, chainGamesData - chainGamesData[0])
                    }
                } else {
-                   val newGameData = CombineLettersGameData(gameData.word, gameData.mixedLetters - letter, gameData.selectedChars + letter)
+//                   val newGameData = CombineLettersGameData(gameData.word, gameData.mixedLetters - letter, gameData.selectedChars + letter)
+                   val index = gameData.mixedLetters.indexOf(letter)
+                   val newMixedLetters = gameData.mixedLetters.mapIndexed{i, let -> if (i == index) '+' else let}
+
+                   val newGameData = gameData.copy(mixedLetters = newMixedLetters, selectedChars = gameData.selectedChars + letter)
+
                    CombineLettersGameState(userData, dictionary, newGameData, chainGamesData)
                }
             }

@@ -13,6 +13,8 @@ services:
       - englishbot_network
     expose:
       - "9042"
+    ports:
+      - 9042:9042
 
   bot:
     build: .
