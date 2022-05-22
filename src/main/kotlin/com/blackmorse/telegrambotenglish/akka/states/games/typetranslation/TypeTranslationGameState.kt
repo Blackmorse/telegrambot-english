@@ -12,6 +12,7 @@ import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import com.blackmorse.telegrambotenglish.akka.states.games.GameState
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.util.*
 
 data class CorrectTranslationTypedEvent(
     @JsonProperty("translation")
@@ -30,7 +31,7 @@ class TypeTranslationGameState(userData: UserData,
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
         val attempt = msg.update.message.text
-        return if (attempt == gameData.word.translation) {
+        return if (attempt.uppercase() == gameData.word.translation.uppercase()) {
             behavior.Effect().persist(CorrectTranslationTypedEvent(attempt))
                 .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
         } else {
