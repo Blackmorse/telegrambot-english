@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.6.10"
-        id("application")
+	id("application")
+	id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "com.blackmorse"
@@ -53,3 +54,14 @@ application {
     mainClass.set("com.blackmorse.telegrambotenglish.EnglishBotKt")
 }
 
+project.setProperty("mainClassName", "com.blackmorse.telegrambotenglish.EnglishBotKt")
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+	val newTransformer = com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer()
+	newTransformer.resource = "reference.conf"
+	transformers.add(newTransformer)
+}
+
+tasks.jar {
+	manifest.attributes["Main-Class"] = "com.blackmorse.telegrambotenglish.EnglishBotKt"
+}
