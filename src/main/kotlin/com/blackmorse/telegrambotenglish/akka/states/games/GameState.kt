@@ -12,4 +12,11 @@ abstract class GameState<T : GameData>(userData: UserData,
                                        val gameData: T,
                                        val chainGamesData: List<GameData>) : State(userData) {
 
+    override fun backState(): State {
+        return PauseGameState(PauseType.BACK, userData, dictionary, this, chainGamesData)
+    }
+
+    override fun mainMenuState(state: State): State {
+        return PauseGameState(PauseType.MAIN_MENU ,userData, dictionary, this, chainGamesData)
+    }
 }

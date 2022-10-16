@@ -11,6 +11,8 @@ import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import com.blackmorse.telegrambotenglish.akka.states.games.GameState
+import com.blackmorse.telegrambotenglish.akka.states.games.PauseGameState
+import com.blackmorse.telegrambotenglish.akka.states.games.PauseType
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class CorrectLetterSelectedEvent(
@@ -81,9 +83,5 @@ class CombineLettersGameState(userData: UserData,
 
     override fun sendBeforeStateMessage(englishBot: EnglishBot) {
         englishBot.sendCombineLettersGameState(userData.chatId, gameData)
-    }
-
-    override fun backState(): State {
-        return ShowDictionaryState(userData, dictionary)
     }
 }

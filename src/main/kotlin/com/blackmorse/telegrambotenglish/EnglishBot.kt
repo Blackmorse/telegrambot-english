@@ -7,7 +7,6 @@ import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameData
-import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoicesGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameData
 import org.slf4j.event.Level
@@ -117,6 +116,16 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         }
 
         val msg = createMessage(chatId, "Select translation for ${gameData.word.word}:", builder)
+        sendApiMethod(msg)
+    }
+
+    fun sendConfirmation(chatId: String) {
+        val builder = ReplyKeyboardMarkup.builder()
+            .apply {
+                this.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.YES.text), KeyboardButton(Commands.NO.text))))
+            }
+
+        val msg = createMessage(chatId, "Are you sure?", builder)
         sendApiMethod(msg)
     }
 

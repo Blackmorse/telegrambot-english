@@ -9,5 +9,7 @@ enum class Commands(val text: String) {
     IMPORT_DICTIONARY("Import Dictionary"),
     ADD_WORD("Add Word"),
     DELETE_WORD("Delete Word"),
-    START_GAME("Start game")
+    START_GAME("Start game"),
+    YES("Yes"),
+    NO("No")
 }

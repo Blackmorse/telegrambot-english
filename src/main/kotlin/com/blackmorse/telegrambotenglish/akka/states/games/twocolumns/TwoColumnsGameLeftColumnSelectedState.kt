@@ -71,9 +71,4 @@ class TwoColumnsGameLeftColumnSelectedState(userData: UserData,
     override fun sendBeforeStateMessage(englishBot: EnglishBot) {
         englishBot.sendTwoColumnsGame(userData.chatId, gameData)
     }
-
-    override fun backState(): State {
-        return ShowDictionaryState(userData, dictionary)
-    }
-
 }

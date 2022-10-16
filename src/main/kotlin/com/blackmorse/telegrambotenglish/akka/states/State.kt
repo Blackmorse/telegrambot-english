@@ -23,7 +23,7 @@ abstract class State(val userData: UserData) {
             }
             Commands.MAIN_MENU.text -> {
                 behavior.Effect().persist(MainMenuEvent)
-                    .thenRun{ englishBot.sendCommandsList(userData.chatId)}
+                    .thenRun{ state: State -> state.sendBeforeStateMessage(englishBot)}
             }
             else -> {
                 doHandleMessage(msg, englishBot, behavior)
@@ -34,7 +34,7 @@ abstract class State(val userData: UserData) {
     fun handleEvent(clazz: Any, state: State, event: Event): State {
         return when (clazz) {
             BackEvent::class.java -> backState()
-            MainMenuEvent::class.java -> ShowCommandsState(state.userData)
+            MainMenuEvent::class.java -> mainMenuState(state)
             else -> doHandleEvent(clazz, state, event)
         }
     }
@@ -50,4 +50,8 @@ abstract class State(val userData: UserData) {
     abstract fun sendBeforeStateMessage(englishBot: EnglishBot)
 
     abstract fun backState(): State
+
+    protected open fun mainMenuState(state: State): State {
+        return ShowCommandsState(state.userData)
+    }
 }

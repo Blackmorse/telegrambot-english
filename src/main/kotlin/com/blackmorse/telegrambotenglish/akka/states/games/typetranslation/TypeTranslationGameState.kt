@@ -7,10 +7,13 @@ import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.states.ShowCommandsState
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import com.blackmorse.telegrambotenglish.akka.states.games.GameState
+import com.blackmorse.telegrambotenglish.akka.states.games.PauseGameState
+import com.blackmorse.telegrambotenglish.akka.states.games.PauseType
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
@@ -59,9 +62,5 @@ class TypeTranslationGameState(userData: UserData,
 
     override fun sendBeforeStateMessage(englishBot: EnglishBot) {
         englishBot.justSendText("Type in translation of word \"${gameData.word.word}\"", userData.chatId)
-    }
-
-    override fun backState(): State {
-        return ShowDictionaryState(userData, dictionary)
     }
 }
