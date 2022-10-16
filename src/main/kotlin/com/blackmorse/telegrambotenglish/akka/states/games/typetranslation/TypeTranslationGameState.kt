@@ -31,7 +31,7 @@ class TypeTranslationGameState(userData: UserData,
         behavior: EventSourcedBehavior<TelegramMessage, Event, State>
     ): Effect<Event, State> {
         val attempt = msg.update.message.text
-        return if (attempt.uppercase() == gameData.word.translation.uppercase()) {
+        return if (checkResult(attempt, gameData.word.translation)) {
             behavior.Effect().persist(CorrectTranslationTypedEvent(attempt))
                 .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
         } else {
@@ -41,6 +41,15 @@ class TypeTranslationGameState(userData: UserData,
                     state.sendBeforeStateMessage(englishBot)
                 }
         }
+    }
+
+    private fun checkResult(attempt: String, result: String): Boolean {
+        val uppercaseAttempt = attempt.uppercase()
+        if (uppercaseAttempt == gameData.word.translation.uppercase()) {
+            return true
+        }
+        return result.split(",").map { it.trim().uppercase() }
+                .any { it == uppercaseAttempt }
     }
 
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
