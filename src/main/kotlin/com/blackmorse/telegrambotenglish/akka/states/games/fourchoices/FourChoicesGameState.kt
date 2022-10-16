@@ -11,8 +11,6 @@ import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import com.blackmorse.telegrambotenglish.akka.states.games.GameState
-import com.blackmorse.telegrambotenglish.akka.states.games.PauseGameState
-import com.blackmorse.telegrambotenglish.akka.states.games.PauseType
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class CorrentTranslationSelectedEvent(
