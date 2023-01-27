@@ -1,6 +1,5 @@
 package com.blackmorse.telegrambotenglish.akka.states.games.combineletters
 
-import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.states.State
@@ -15,8 +14,8 @@ data class CombineLettersGameData(
     val mixedLetters: List<Char>,
     @JsonProperty("selectedChars")
     val selectedChars: List<Char>) : GameData {
-    override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
-        return CombineLettersGameState(userData, dictionary, this, chainGamesData)
+    override fun createState(userData: UserData, chainGamesData: List<GameData>, stateAfterFinish: State): State {
+        return CombineLettersGameState(userData, this, chainGamesData, stateAfterFinish)
     }
 
     companion object {

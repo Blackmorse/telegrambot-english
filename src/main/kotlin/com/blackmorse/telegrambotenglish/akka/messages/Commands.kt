@@ -11,5 +11,6 @@ enum class Commands(val text: String) {
     DELETE_WORD("Delete Word"),
     START_GAME("Start game"),
     YES("Yes"),
-    NO("No")
+    NO("No"),
+    WORD_OF_THE_DAY("A word of the day")
 }

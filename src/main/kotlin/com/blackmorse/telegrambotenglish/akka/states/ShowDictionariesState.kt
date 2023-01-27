@@ -5,6 +5,7 @@ import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.*
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class SelectDictionaryEvent(
@@ -19,7 +20,7 @@ class ShowDictionariesState(
     userData: UserData) : State(userData) {
     override fun doHandleMessage(msg: TelegramMessage,
                       englishBot: EnglishBot,
-                      behavior: EventSourcedBehavior<TelegramMessage, Event, State>): Effect<Event,  State> {
+                      behavior: EventSourcedBehavior<UserActorMessage, Event, State>): Effect<Event,  State> {
         return when (msg.update.message.text) {
             Commands.ADD_DICTIONARY.text -> {
                 behavior.Effect().persist(AddDictionaryEvent)

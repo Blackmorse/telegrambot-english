@@ -8,6 +8,7 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionariesState
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
@@ -21,12 +22,12 @@ enum class PauseType {
 
 class PauseGameState<T: GameData>(private val pauseType: PauseType,
                                   userData: UserData,
-                                  dictionary: Dictionary,
                                   private val gameState: GameState<T>,
-                                  chainGamesData: List<GameData>): GameState<T>(userData, dictionary, gameState.gameData, chainGamesData) {
+                                  private val stateToBackButton: State,
+                                  chainGamesData: List<GameData>): GameState<T>(userData, gameState.gameData, chainGamesData, stateToBackButton) {
     override fun doHandleMessage(msg: TelegramMessage,
                                  englishBot: EnglishBot,
-                                 behavior: EventSourcedBehavior<TelegramMessage, Event, State>): Effect<Event, State> {
+                                 behavior: EventSourcedBehavior<UserActorMessage, Event, State>): Effect<Event, State> {
         return if (msg.update.message.text == Commands.YES.text) {
             behavior.Effect().persist(YesEvent)
                     .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
@@ -40,7 +41,7 @@ class PauseGameState<T: GameData>(private val pauseType: PauseType,
         return when (clazz) {
             YesEvent::class.java ->
                 if(pauseType == PauseType.BACK)
-                    ShowDictionaryState(userData, dictionary)
+                    this.stateToBackButton
                 else
                     ShowDictionariesState(userData)
             else -> this.gameState
@@ -48,7 +49,7 @@ class PauseGameState<T: GameData>(private val pauseType: PauseType,
     }
 
     override fun sendBeforeStateMessage(englishBot: EnglishBot) {
-        englishBot.sendConfirmation(userData.chatId)
+        englishBot.sendConfirmation(userData.chatId, "You're trying to quit the game. Are you sure?")
     }
 
     override fun backState(): State {

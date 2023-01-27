@@ -8,6 +8,7 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class DictionaryImportedEvent(
@@ -23,7 +24,7 @@ class ImportDictionaryState(
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         fun wrongFormatResponse(): Effect<Event, State> {
             return behavior.Effect().persist(IncorrectDictionaryFormatEvent)

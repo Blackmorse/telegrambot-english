@@ -9,6 +9,7 @@ import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameData
 import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoicesGameData
@@ -31,7 +32,7 @@ class ShowDictionaryState(
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         return when (msg.update.message.text) {
             Commands.ADD_WORD.text -> {
@@ -102,6 +103,9 @@ class ShowDictionaryState(
     }
 
     private fun createGames(dictionary: Dictionary, random: Random): List<GameData> {
+        if (dictionary.words.isEmpty()) {
+            return emptyList()
+        }
         return (createTwoColumnGames(dictionary, random) +
             createTypeTranslationGames(dictionary, random) +
             createFourChoicesGameData(dictionary, random) +
@@ -119,7 +123,7 @@ class ShowDictionaryState(
                 if (datas.isEmpty()) {
                     this
                 } else {
-                    datas[0].createState(userData, dictionary, datas - datas[0])
+                    datas[0].createState(userData, datas - datas[0], ShowDictionaryState(userData, dictionary))
                 }
             }
             else -> this

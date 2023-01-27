@@ -7,6 +7,7 @@ import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
@@ -21,13 +22,13 @@ data class CorrectLetterSelectedEvent(
 object IncorrectLetterSelectedEvent : Event
 
 class CombineLettersGameState(userData: UserData,
-                              dictionary: Dictionary,
                               gameData: CombineLettersGameData,
-                              chainGamesData: List<GameData>) : GameState<CombineLettersGameData>(userData, dictionary, gameData, chainGamesData) {
+                              chainGamesData: List<GameData>,
+                              stateAfterFinish: State) : GameState<CombineLettersGameData>(userData, gameData, chainGamesData, stateAfterFinish) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         val message = msg.update.message.text
         return if (message.length > 1) {
@@ -60,19 +61,14 @@ class CombineLettersGameState(userData: UserData,
             CorrectLetterSelectedEvent::class.java -> {
                val letter = (event as CorrectLetterSelectedEvent).letter
                return if (gameData.selectedChars.joinToString("") + letter == gameData.word.translation) {
-                   if (chainGamesData.isEmpty()) {
-                       ShowDictionaryState(userData, dictionary)
-                   } else {
-                       chainGamesData[0].createState(userData, dictionary, chainGamesData - chainGamesData[0])
-                   }
+                   finishGame()
                } else {
-//                   val newGameData = CombineLettersGameData(gameData.word, gameData.mixedLetters - letter, gameData.selectedChars + letter)
                    val index = gameData.mixedLetters.indexOf(letter)
                    val newMixedLetters = gameData.mixedLetters.mapIndexed{i, let -> if (i == index) '+' else let}
 
                    val newGameData = gameData.copy(mixedLetters = newMixedLetters, selectedChars = gameData.selectedChars + letter)
 
-                   CombineLettersGameState(userData, dictionary, newGameData, chainGamesData)
+                   CombineLettersGameState(userData, newGameData, chainGamesData, stateAfterFinish)
                }
             }
             else -> this

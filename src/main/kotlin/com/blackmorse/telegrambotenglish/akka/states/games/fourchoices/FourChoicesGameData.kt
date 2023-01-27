@@ -14,8 +14,8 @@ data class FourChoicesGameData(
     val word: WordWithTranslation,
     @JsonProperty("translations")
     val translations: List<String>) : GameData {
-    override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
-        return FourChoicesGameState(userData, dictionary, this, chainGamesData)
+    override fun createState(userData: UserData, chainGamesData: List<GameData>, stateAfterFinish: State): State {
+        return FourChoicesGameState(userData, this, chainGamesData, stateAfterFinish)
     }
 
     companion object {

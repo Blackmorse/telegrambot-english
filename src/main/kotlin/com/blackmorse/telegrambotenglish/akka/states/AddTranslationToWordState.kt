@@ -8,6 +8,7 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class TranslationToWordEnteredEvent(
@@ -25,7 +26,7 @@ class AddTranslationToWordState(
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         return behavior.Effect().persist(TranslationToWordEnteredEvent(msg.update.message.text))
             .thenRun { state: ShowDictionaryState -> state.sendBeforeStateMessage(englishBot) }

@@ -6,3 +6,4 @@ abstract class UserActorMessage
 
 data class TelegramMessage(val update: Update) : UserActorMessage()
 
+object WordOfTheDay : UserActorMessage()

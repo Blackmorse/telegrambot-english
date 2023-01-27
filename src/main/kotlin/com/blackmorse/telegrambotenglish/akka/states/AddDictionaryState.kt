@@ -7,6 +7,7 @@ import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class DictionaryAddedEvent(
@@ -20,7 +21,7 @@ class AddDictionaryState(
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         val dictionaryName = msg.update.message.text
         return behavior.Effect().persist(DictionaryAddedEvent(dictionaryName))

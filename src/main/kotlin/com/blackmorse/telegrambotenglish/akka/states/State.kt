@@ -7,6 +7,10 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
+import com.blackmorse.telegrambotenglish.akka.messages.WordOfTheDay
+import java.util.*
+import kotlin.random.Random
 
 object BackEvent : Event
 object MainMenuEvent : Event
@@ -14,7 +18,7 @@ object MainMenuEvent : Event
 abstract class State(val userData: UserData) {
     fun handleMessage(msg: TelegramMessage,
                       englishBot: EnglishBot,
-                      behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+                      behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         return when (msg.update.message.text) {
             Commands.BACK.text -> {
@@ -31,10 +35,29 @@ abstract class State(val userData: UserData) {
         }
     }
 
+    open fun handleWordOfTheDay(englishBot: EnglishBot, behavior: EventSourcedBehavior<UserActorMessage, Event, State>): Effect<Event, State> {
+        return behavior.Effect().persist(WordOfTheDayEvent(System.nanoTime()))
+                .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
+    }
+
+    fun wordOfTheDay(previousState: State, seed: Long): WordOfDayState {
+        val allWords = userData.dictionaries.flatMap { it.words }
+        val word = if (allWords.isEmpty()) {
+            Optional.empty()
+        } else {
+            val random = Random(seed)
+            val wordNumber = random.nextInt(allWords.size)
+            Optional.of(allWords[wordNumber])
+        }
+
+        return WordOfDayState(userData, previousState, word, seed)
+    }
+
     fun handleEvent(clazz: Any, state: State, event: Event): State {
         return when (clazz) {
             BackEvent::class.java -> backState()
             MainMenuEvent::class.java -> mainMenuState(state)
+            WordOfTheDayEvent::class.java -> wordOfTheDay(this, (event as WordOfTheDayEvent).seed)
             else -> doHandleEvent(clazz, state, event)
         }
     }
@@ -42,7 +65,7 @@ abstract class State(val userData: UserData) {
     protected abstract fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State>
 
     protected abstract fun doHandleEvent(clazz: Any, state: State, event: Event): State

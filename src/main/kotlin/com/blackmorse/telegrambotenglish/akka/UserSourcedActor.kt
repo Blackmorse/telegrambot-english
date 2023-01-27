@@ -5,6 +5,8 @@ import akka.persistence.typed.PersistenceId
 import akka.persistence.typed.javadsl.*
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
+import com.blackmorse.telegrambotenglish.akka.messages.WordOfTheDay
 import com.blackmorse.telegrambotenglish.akka.states.*
 import com.blackmorse.telegrambotenglish.akka.states.games.PauseGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameState
@@ -14,19 +16,19 @@ import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumns
 import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameState
 
 interface Event
-object ShowCommandsEvent: Event
-object ShowDictionariesEvent: Event
+
 object AddDictionaryEvent : Event
 object DeleteDictionaryEvent : Event
 
 class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private val classes: List<Class<out State>>) :
-        EventSourcedBehavior<TelegramMessage, Event, State>(PersistenceId.ofUniqueId("userActor$chatId")) {
-    override fun commandHandler(): CommandHandler<TelegramMessage, Event, State> {
-        val builder = CommandHandlerBuilder.builder<TelegramMessage, Event, State>()
+        EventSourcedBehavior<UserActorMessage, Event, State>(PersistenceId.ofUniqueId("userActor$chatId")) {
+    override fun commandHandler(): CommandHandler<UserActorMessage, Event, State> {
+        val builder = CommandHandlerBuilder.builder<UserActorMessage, Event, State>()
 
         classes.forEach{clazz ->
             builder.forStateType(clazz)
                 .onCommand(TelegramMessage::class.java){state, msg -> state.handleMessage(msg, englishBot, this)}
+                .onCommand(WordOfTheDay::class.java){state, msg -> state.handleWordOfTheDay(englishBot, this)}
         }
 
             builder
@@ -56,7 +58,7 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
     }
 
     companion object {
-        fun create (chatId: String, englishBot: EnglishBot): Behavior<TelegramMessage> {
+        fun create (chatId: String, englishBot: EnglishBot): Behavior<UserActorMessage> {
             return UserSourcedActor(chatId, englishBot,
             listOf(
                 HelloScreenState::class.java,
@@ -74,7 +76,8 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
                 FourChoicesGameState::class.java,
                 CombineLettersGameState::class.java,
                 ImportDictionaryState::class.java,
-                PauseGameState::class.java
+                PauseGameState::class.java,
+                WordOfDayState::class.java
             ))
         }
     }

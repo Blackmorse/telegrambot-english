@@ -51,7 +51,10 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
 
     fun sendCommandsList(chatId: String) {
         val builder = ReplyKeyboardMarkup.builder()
-        builder.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.SHOW_DICTIONARIES.text))))
+        builder.keyboardRow(KeyboardRow(listOf(
+                KeyboardButton(Commands.SHOW_DICTIONARIES.text),
+                KeyboardButton(Commands.WORD_OF_THE_DAY.text)
+        )))
         val msg = createMessage(chatId, "please select", builder)
         sendApiMethod(msg)
     }
@@ -119,13 +122,13 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
         sendApiMethod(msg)
     }
 
-    fun sendConfirmation(chatId: String) {
+    fun sendConfirmation(chatId: String, text: String) {
         val builder = ReplyKeyboardMarkup.builder()
             .apply {
                 this.keyboardRow(KeyboardRow(listOf(KeyboardButton(Commands.YES.text), KeyboardButton(Commands.NO.text))))
             }
 
-        val msg = createMessage(chatId, "Are you sure?", builder)
+        val msg = createMessage(chatId, text, builder)
         sendApiMethod(msg)
     }
 

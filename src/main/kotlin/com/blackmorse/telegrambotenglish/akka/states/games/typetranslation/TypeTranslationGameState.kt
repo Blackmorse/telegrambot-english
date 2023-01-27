@@ -3,11 +3,10 @@ package com.blackmorse.telegrambotenglish.akka.states.games.typetranslation
 import akka.persistence.typed.javadsl.Effect
 import akka.persistence.typed.javadsl.EventSourcedBehavior
 import com.blackmorse.telegrambotenglish.EnglishBot
-import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
-import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
 import com.blackmorse.telegrambotenglish.akka.states.games.GameState
@@ -22,13 +21,13 @@ data class CorrectTranslationTypedEvent(
 object WrongTranslationTypedEvent : Event
 
 class TypeTranslationGameState(userData: UserData,
-                               dictionary: Dictionary,
                                gameData: TypeTranslationGameData,
-                               chainGamesData: List<GameData>) : GameState<TypeTranslationGameData>(userData, dictionary, gameData, chainGamesData) {
+                               chainGamesData: List<GameData>,
+                               stateAfterFinish: State) : GameState<TypeTranslationGameData>(userData, gameData, chainGamesData, stateAfterFinish) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         val attempt = msg.update.message.text
         return if (checkResult(attempt, gameData.word.translation)) {
@@ -55,13 +54,7 @@ class TypeTranslationGameState(userData: UserData,
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
         return when (clazz) {
             WrongTranslationTypedEvent::class.java -> this
-            CorrectTranslationTypedEvent::class.java -> {
-                if (chainGamesData.isEmpty()) {
-                    ShowDictionaryState(userData, dictionary)
-                } else {
-                    chainGamesData[0].createState(userData, dictionary, chainGamesData - chainGamesData[0])
-                }
-            }
+            CorrectTranslationTypedEvent::class.java -> finishGame()
             else -> this
         }
     }

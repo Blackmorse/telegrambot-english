@@ -7,6 +7,7 @@ import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
@@ -21,13 +22,13 @@ data class CorrentTranslationSelectedEvent(
 object WrongTranslationSelectedEvent : Event
 
 class FourChoicesGameState(userData: UserData,
-                           dictionary: Dictionary,
                            gameData: FourChoicesGameData,
-                           chainGamesData: List<GameData>) : GameState<FourChoicesGameData>(userData, dictionary, gameData, chainGamesData) {
+                           chainGamesData: List<GameData>,
+                           stateAfterFinish: State) : GameState<FourChoicesGameData>(userData, gameData, chainGamesData, stateAfterFinish) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         val attempt = msg.update.message.text
         return if (attempt == gameData.word.translation) {
@@ -45,13 +46,7 @@ class FourChoicesGameState(userData: UserData,
     override fun doHandleEvent(clazz: Any, state: State, event: Event): State {
         return when (clazz) {
             WrongTranslationSelectedEvent -> this
-            CorrentTranslationSelectedEvent::class.java -> {
-                if (chainGamesData.isEmpty()) {
-                    ShowDictionaryState(userData, dictionary)
-                } else {
-                    chainGamesData[0].createState(userData, dictionary, chainGamesData - chainGamesData[0])
-                }
-            }
+            CorrentTranslationSelectedEvent::class.java -> finishGame()
             else -> this
         }
     }

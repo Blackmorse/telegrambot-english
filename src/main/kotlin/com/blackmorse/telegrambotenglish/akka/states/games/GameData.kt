@@ -1,6 +1,5 @@
 package com.blackmorse.telegrambotenglish.akka.states.games
 
-import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameData
@@ -18,5 +17,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     JsonSubTypes.Type(value = TypeTranslationGameData::class, name = "TypeTranslationGameData"),
 )
 interface GameData {
-    fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State
+    fun createState(userData: UserData, chainGamesData: List<GameData>, stateAfterFinish: State): State
 }

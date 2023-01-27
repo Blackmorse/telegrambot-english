@@ -8,6 +8,7 @@ import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.WordWithTranslation
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
+import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.states.ShowDictionaryState
 import com.blackmorse.telegrambotenglish.akka.states.State
 import com.blackmorse.telegrambotenglish.akka.states.games.GameData
@@ -22,13 +23,13 @@ data class WordGuessedEvent(
 object WordNotGuessedEvent : Event
 
 class TwoColumnsGameLeftColumnSelectedState(userData: UserData,
-                                            dictionary: Dictionary,
                                             gameData: TwoColumnsGameData,
-                                            chainGamesData: List<GameData>) : GameState<TwoColumnsGameData>(userData, dictionary, gameData, chainGamesData) {
+                                            chainGamesData: List<GameData>,
+                                            stateAfterFinish: State) : GameState<TwoColumnsGameData>(userData, gameData, chainGamesData, stateAfterFinish) {
     override fun doHandleMessage(
         msg: TelegramMessage,
         englishBot: EnglishBot,
-        behavior: EventSourcedBehavior<TelegramMessage, Event, State>
+        behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         val selectedWord = msg.update.message.text
         val wordWithTranslationOpt = gameData.checkRightWord(selectedWord)
@@ -48,11 +49,7 @@ class TwoColumnsGameLeftColumnSelectedState(userData: UserData,
         return when (clazz) {
             WordGuessedEvent::class.java -> {
                 if (gameData.words.size == 1) {
-                    if (chainGamesData.isEmpty()) {
-                        ShowDictionaryState(userData, dictionary)
-                    } else {
-                        chainGamesData[0].createState(userData, dictionary, chainGamesData - chainGamesData[0])
-                    }
+                    finishGame()
                 } else {
                     val wgEvent = event as WordGuessedEvent
                     val newWords = gameData.words - wgEvent.wordWithTranslation
@@ -60,7 +57,7 @@ class TwoColumnsGameLeftColumnSelectedState(userData: UserData,
                     val newRightColumn = gameData.rightColumn - wgEvent.wordWithTranslation.translation
 
                     val newGameData = TwoColumnsGameData(newWords, newLeftColumn, newRightColumn, Optional.empty())
-                    TwoColumnsGameState(userData, dictionary, newGameData, chainGamesData)
+                    TwoColumnsGameState(userData, newGameData, chainGamesData, stateAfterFinish)
                 }
             }
             WordNotGuessedEvent -> this

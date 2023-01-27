@@ -21,8 +21,8 @@ data class TwoColumnsGameData(
     @JsonProperty("leftSelectedWord")
     val leftSelectedWord: Optional<String>
 ) : GameData {
-    override fun createState(userData: UserData, dictionary: Dictionary, chainGamesData: List<GameData>): State {
-        return TwoColumnsGameState(userData, dictionary, this, chainGamesData)
+    override fun createState(userData: UserData, chainGamesData: List<GameData>, stateAfterFinish: State): State {
+        return TwoColumnsGameState(userData, this, chainGamesData, stateAfterFinish)
     }
     fun checkRightWord(word: String): Optional<WordWithTranslation> {
         if (!leftSelectedWord.isPresent) return Optional.empty()
