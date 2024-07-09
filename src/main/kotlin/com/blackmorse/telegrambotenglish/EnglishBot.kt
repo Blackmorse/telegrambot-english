@@ -149,14 +149,14 @@ class EnglishBot(private val token: String, private val name: String) : Telegram
     }
 }
 
-fun main(args: Array<String>) {
+fun main() {
     try {
-        val token = args[0]
-        val botName = args[1]
+        val token = System.getenv("TELEGRAM_TOKEN")
+        val botName = System.getenv("BOT_NAME")
         val englishBot = EnglishBot(token, botName)
 
         val system  = ActorSystem.create(
-            Behaviors.logMessages(LogOptions.create().withLevel(Level.TRACE),BotSupervisor.createBehavior(englishBot)),
+            Behaviors.logMessages(LogOptions.create().withLevel(Level.TRACE), BotSupervisor.createBehavior(englishBot)),
             "actorSystem")
 
         englishBot.system = system

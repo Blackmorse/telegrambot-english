@@ -28,7 +28,7 @@ class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private v
         classes.forEach{clazz ->
             builder.forStateType(clazz)
                 .onCommand(TelegramMessage::class.java){state, msg -> state.handleMessage(msg, englishBot, this)}
-                .onCommand(WordOfTheDay::class.java){state, msg -> state.handleWordOfTheDay(englishBot, this)}
+                .onCommand(WordOfTheDay::class.java){state, _ -> state.handleWordOfTheDay(englishBot, this)}
         }
 
             builder
