@@ -166,6 +166,6 @@ fun main() {
             botApi.registerBot(englishBot)
         }.start()
     } catch (e: Exception) {
-        println(e)
+        e.printStackTrace()
     }
 }

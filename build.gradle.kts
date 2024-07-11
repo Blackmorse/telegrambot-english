@@ -31,6 +31,7 @@ dependencies {
 	implementation("org.apache.tinkerpop:tinkergraph-gremlin:3.6.0")
 	implementation("org.apache.tinkerpop:gremlin-driver:3.6.0")
 
+	implementation("com.typesafe.akka:akka-persistence-dynamodb_2.13:1.2.0-RC2" )
 
 	implementation("com.github.dnvriend:akka-persistence-jdbc_2.13:3.5.3")
 
