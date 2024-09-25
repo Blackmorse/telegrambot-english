@@ -1,15 +1,13 @@
 package com.blackmorse.telegrambotenglish.akka.states
 
-import akka.persistence.typed.javadsl.Effect
-import akka.persistence.typed.javadsl.EventSourcedBehavior
+import org.apache.pekko.persistence.typed.javadsl.Effect
+import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
-import com.blackmorse.telegrambotenglish.akka.states.games.combineletters.CombineLettersGameData
-import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameData
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 import kotlin.random.Random
@@ -27,6 +25,7 @@ class ShowCommandsState(
         behavior: EventSourcedBehavior<UserActorMessage, Event, State>
     ): Effect<Event, State> {
         return if (msg.update.message.text == Commands.SHOW_DICTIONARIES.text) {
+
             behavior.Effect().persist(ShowDictionariesEvent)
                     .thenRun { state: State -> state.sendBeforeStateMessage(englishBot) }
         } else if (msg.update.message.text == Commands.WORD_OF_THE_DAY.text) {

@@ -1,6 +1,6 @@
 package com.blackmorse.telegrambotenglish.akka.states
 
-import akka.persistence.typed.javadsl.*
+import org.apache.pekko.persistence.typed.javadsl.*
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.*
 import com.blackmorse.telegrambotenglish.akka.messages.Commands

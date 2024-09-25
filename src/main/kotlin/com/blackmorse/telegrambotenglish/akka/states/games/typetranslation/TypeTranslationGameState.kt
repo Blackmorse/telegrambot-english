@@ -1,7 +1,7 @@
 package com.blackmorse.telegrambotenglish.akka.states.games.typetranslation
 
-import akka.persistence.typed.javadsl.Effect
-import akka.persistence.typed.javadsl.EventSourcedBehavior
+import org.apache.pekko.persistence.typed.javadsl.Effect
+import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData

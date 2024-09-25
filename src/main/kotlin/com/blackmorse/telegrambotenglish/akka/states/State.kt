@@ -1,7 +1,6 @@
 package com.blackmorse.telegrambotenglish.akka.states
 
-import akka.persistence.typed.javadsl.Effect
-import akka.persistence.typed.javadsl.EventSourcedBehavior
+import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.Event
 import com.blackmorse.telegrambotenglish.akka.UserData
@@ -9,6 +8,7 @@ import com.blackmorse.telegrambotenglish.akka.messages.Commands
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
 import com.blackmorse.telegrambotenglish.akka.messages.WordOfTheDay
+import org.apache.pekko.persistence.typed.javadsl.Effect;
 import java.util.*
 import kotlin.random.Random
 

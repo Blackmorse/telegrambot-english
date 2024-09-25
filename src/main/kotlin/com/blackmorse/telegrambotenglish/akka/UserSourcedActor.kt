@@ -1,8 +1,8 @@
 package com.blackmorse.telegrambotenglish.akka
 
-import akka.actor.typed.Behavior
-import akka.persistence.typed.PersistenceId
-import akka.persistence.typed.javadsl.*
+import org.apache.pekko.actor.typed.Behavior
+import org.apache.pekko.persistence.typed.PersistenceId
+import org.apache.pekko.persistence.typed.javadsl.*
 import com.blackmorse.telegrambotenglish.EnglishBot
 import com.blackmorse.telegrambotenglish.akka.messages.TelegramMessage
 import com.blackmorse.telegrambotenglish.akka.messages.UserActorMessage
@@ -14,11 +14,20 @@ import com.blackmorse.telegrambotenglish.akka.states.games.fourchoices.FourChoic
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameLeftColumnSelectedState
 import com.blackmorse.telegrambotenglish.akka.states.games.twocolumns.TwoColumnsGameState
 import com.blackmorse.telegrambotenglish.akka.states.games.typetranslation.TypeTranslationGameState
+import java.util.*
 
 interface Event
 
 object AddDictionaryEvent : Event
 object DeleteDictionaryEvent : Event
+
+
+//abstract class AdapterEventSourcedBehavior<UserActorMessage, Event, State>(persistenceId: PersistenceId) :
+//        EventSourcedBehavior<UserActorMessage, Event, State>(persistenceId, Optional.empty()) {
+//    fun effect(): EffectFactories<Event, State> {
+//        return Effect()
+//    }
+//}
 
 class UserSourcedActor(val chatId: String, val englishBot: EnglishBot, private val classes: List<Class<out State>>) :
         EventSourcedBehavior<UserActorMessage, Event, State>(PersistenceId.ofUniqueId("userActor$chatId")) {

@@ -1,8 +1,8 @@
 package com.blackmorse.telegrambotenglish
 
-import akka.actor.typed.ActorSystem
-import akka.actor.typed.LogOptions
-import akka.actor.typed.javadsl.Behaviors
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.actor.typed.LogOptions
+import org.apache.pekko.actor.typed.javadsl.Behaviors
 import com.blackmorse.telegrambotenglish.akka.BotSupervisor
 import com.blackmorse.telegrambotenglish.akka.Dictionary
 import com.blackmorse.telegrambotenglish.akka.messages.Commands
@@ -20,7 +20,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession
 
-class EnglishBot(private val token: String, private val name: String) : TelegramLongPollingBot() {
+class EnglishBot(private val token: String, private val name: String) : TelegramLongPollingBot(token) {
     lateinit  var system: ActorSystem<Update>
 
     override fun getBotToken(): String {
@@ -161,9 +161,13 @@ fun main() {
 
         englishBot.system = system
         Thread {
-            val botApi = TelegramBotsApi(DefaultBotSession::class.java)
+            try {
+                val botApi = TelegramBotsApi(DefaultBotSession::class.java)
 
-            botApi.registerBot(englishBot)
+                botApi.registerBot(englishBot)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }.start()
     } catch (e: Exception) {
         e.printStackTrace()
